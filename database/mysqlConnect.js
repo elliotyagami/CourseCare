@@ -1,11 +1,13 @@
 import mysql from 'mysql'
-import { hostname, username, secret, database } from './../../config/config'
+import dotenv from 'dotenv'
+
+dotenv.config()
 
 let connection = mysql.createConnection({
-	host: hostname,
-	user: username,
-	password: secret,
-	database: database
+	host: process.env.hostname,
+	user: process.env.username,
+	password: process.env.secret,
+	database: process.env.database
 });
 connection.connect();
 
