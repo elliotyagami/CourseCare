@@ -10,8 +10,6 @@ import expSession from 'express-session'
 import ioCookieParser from 'socket.io-cookie-parser'
 
 import routes from './src/routes'
-import { checkCookie, insertSong, songHistory, historyOfPresentSong} from './src/models'
-import { md5songHasher, escapeString } from './src/helpers'
 
 let MD5 = new Hashes.MD5
 let options = {
@@ -28,7 +26,7 @@ app.use(morgan('combined'))
 app.use(express.static(path.join(__dirname, 'public'),
 	options))
 app.use(bodyParser.urlencoded({
-	extended: true
+	extended: false
 }))
 app.set('view engine', 'handlebars')
 app.set('views', path.join(__dirname, '/src/views'))
@@ -80,36 +78,3 @@ io.use(ioCookieParser());
 
 
 
-io.sockets.on("connection", function (socket) {
-	socket.on('youtube-url', async function (url) {
-		let name = md5songHasher(url)
-		let cookie = socket.request.cookies['3dcookie']
-		if (cookie) {
-			let nameFetcher = `youtube-dl --get-description '${url}' |grep -A1 '^$' | head -2`
-			shell.exec(nameFetcher, (code, stdout, stderr) => {
-				insertSong({ url: url, song_name: escapeString(stdout.trim())}, (err, result) => {
-					if (!err || err.code == 'ER_DUP_ENTRY') {
-						songHistory({ url: url, cookie: cookie }, (err, result) => {
-							console.log('stored')
-						})
-					}
-				})
-
-			})
-		}
-		await shell.exec(`./script.sh ${url} ${name}`)
-		socket.emit("done", name)
-	})
-	socket.on('watching', (songId) => {
-		let cookie = socket.request.cookies['3dcookie']
-		if (cookie) {
-			historyOfPresentSong({ songId: songId, cookie: cookie }, (err, result) => {
-				console.log('stored')
-			})
-		}
-	})
-	socket.on('favorite', function (hash) {
-	})
-	socket.on('upvote', function (hash) {
-	})
-})
