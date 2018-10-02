@@ -1,3 +1,9 @@
+.pusher {
+    width: calc(100% - 300px)
+}
+
+/* chat popup */
+
 .popup-box
 {
     display: none;
@@ -46,3 +52,36 @@
     height: 100%;
     overflow-y: scroll;
 }
+
+
+ /* whiteboard  */
+
+ /* * {
+    box-sizing: border-box;
+  } */
+
+  /**
+   * Canvas
+   */
+
+  .whiteboard {
+    height: 50vh;
+    width: 50vw;
+    border: solid black 2px ;
+  }
+
+  .colors {
+    position: fixed;
+  }
+
+  .color {
+    display: inline-block;
+    height: 48px;
+    width: 48px;
+  }
+
+  .color.black { background-color: black; }
+  .color.red { background-color: red; }
+  .color.green { background-color: green; }
+  .color.blue { background-color: blue; }
+  .color.yellow { background-color: yellow; }

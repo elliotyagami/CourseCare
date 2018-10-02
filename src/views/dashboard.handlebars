@@ -1,4 +1,5 @@
     <link rel="stylesheet" href="/css/popup.css">
+    <script src="/socket.io/socket.io.js"></script>
     <script src="/js/popup.js"></script>
 <style>
         .height-same {
@@ -9,4 +10,10 @@
 {{> nav-bar}}
 {{> course-side-bar}}
 {{> feed}}
+{{!-- {{> whiteboard}} --}}
 {{> chat-bar}}
+{{#ifeq role "tutor"}}
+    <script src="/js/whiteboard.js"></script>
+{{else}}
+    <script src="/js/whiteboard-client.js"></script>
+{{/ifeq}}

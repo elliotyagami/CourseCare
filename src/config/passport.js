@@ -6,11 +6,15 @@ module.exports =  function (User, passport) {
 
     passport.serializeUser(function (user, done) {
         console.log('bb')
-        done(null, user.id);
+        let data = {
+            id: user.id,
+            role: user.role,
+        }
+        done(null, data);
     });
 
-    passport.deserializeUser(function (id, done) {
-        User.findById(id).then(function (user) {
+    passport.deserializeUser(function (key, done) {
+        User.findById(key.id).then(function (user) {
             console.log('aa')
             if (user) {
                 done(null, user.get());

@@ -6,7 +6,7 @@
 import student from './students'
 import tutor from './tutors'
 import bcrypt from 'bcryptjs'
-import { registerUser, register, dashboard } from './../controllers'
+import { registerUser, register, dashboard, whiteboard} from './../controllers'
 
 module.exports =  function (app, passport) {
 
@@ -19,13 +19,15 @@ module.exports =  function (app, passport) {
 
     app.get('/:role/dashboard', dashboard)
 
+    app.get('/whiteboard', whiteboard)
+
     app.post('/:role/login', function (req, res, next) {
 
         passport.authenticate('local-login', function (err, user, info) {
             if (!user) { res.redirect(`/${req.params.role}/register`); }
             if (user)
             req.logIn(user, function(err) {
-                res.redirect(`/${req.params.role}/dashboard`);
+                res.redirect(`/${req.user.role}/dashboard`);
             })
         })(req, res, next)
     })

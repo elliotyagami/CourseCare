@@ -26,7 +26,6 @@ models.sequelize.sync().then(function() {
 });
 
 
-
 let options = {
 	dotfiles: 'ignore',
 	index: false
@@ -47,6 +46,7 @@ app.set('view engine', 'handlebars')
 app.set('views', path.join(__dirname, '/src/views'))
 app.engine('handlebars', exphbs({
 	defaultLayout: 'index',
+	helpers: require("./src/helpers/handlebar-helper").helpers,
 	layoutsDir: 'src/views/layouts',
 	partialsDir: [
 		'src/views/partials'
@@ -110,7 +110,13 @@ let server = app.listen(process.env.PORT || 3000, function () {
 })
 
 let io = require("socket.io")(server, {})
-io.use(ioCookieParser());
+
+function onConnection(socket){
+	socket.on('drawing', (data) => socket.broadcast.emit('drawing', data));
+	socket.on('clear', (data) => socket.broadcast.emit('clear', data));
+  }
+
+io.on('connection', onConnection);
 
 
 

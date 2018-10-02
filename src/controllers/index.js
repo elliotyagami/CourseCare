@@ -13,9 +13,18 @@ export const dashboard = (req, res) => {
 
 export const register = (req, res) => {
     if (req.isAuthenticated()) {
-        res.redirect(`/${req.user._type}/dashboard`)
+        res.redirect(`/${req.user.role}/dashboard`)
     } else {
         res.render('register', { role: req.params.role })
+    }
+}
+
+export const whiteboard = (req, res) => {
+    if (req.isAuthenticated()) {
+        // res.redirect(`/${req.user.type}/whiteboard`)
+        res.render("whiteboard",{role: req.user.role, layout: 'empty.handlebars'})
+    } else {
+        res.render("")
     }
 }
 
