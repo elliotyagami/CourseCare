@@ -1,0 +1,24 @@
+<div class="ui visible left  vertical sidebar menu">
+    <a class="item height-same">
+    </a>
+    <a class="item">
+        <i class="user icon"></i>
+        Profile
+    </a>
+    <a class="item" href="/{{role}}/dashboard">
+        <i class="ellipsis vertical icon"></i>
+        Dashboard
+    </a>
+    <a class="item">
+        <i class="list icon"></i>
+        Courses
+        <div class="menu friends-menu">
+            {{#each courses}}
+            <a class="item" value="{{this.course_id}}">
+                <i class="child icon"></i>
+                {{this.title}}
+            </a>
+            {{/each}}
+        </div>
+    </a>
+</div>

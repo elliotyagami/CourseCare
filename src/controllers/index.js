@@ -22,16 +22,25 @@ export const register = (req, res) => {
 export const whiteboard = (req, res) => {
     if (req.isAuthenticated()) {
         // res.redirect(`/${req.user.type}/whiteboard`)
-        res.render("whiteboard",{role: req.user.role, layout: 'empty.handlebars'})
+        res.render("xhr-whiteboard",{role: req.user.role, layout: 'empty.handlebars'})
     } else {
         res.render("")
+    }
+}
+
+export const profile = (req, res) => {
+    if (req.isAuthenticated()) {
+        // res.redirect(`/${req.user.type}/whiteboard`)
+        res.render("profile",{role: req.user.role})
+    } else {
+        res.redirect(`/${req.params.role}/register`)
     }
 }
 
 export const discussion = (req, res) => {
     if (req.isAuthenticated()) {
         // res.redirect(`/${req.user.type}/whiteboard`)
-        res.render("discussion",{layout: 'empty.handlebars', "posts": [
+        res.render("xhr-discussion",{layout: 'empty.handlebars', "posts": [
             {
                 "authorpic": "/images/avatar/jenny.jpg",
                 "authorname": "Jenny",
@@ -42,10 +51,10 @@ export const discussion = (req, res) => {
                 "comments": [
                     {
                         "author": "Matt",
-                        "pic": "",
+                        "pic": "/images/avatar/matthew.png",
                         "text": "How artistic!",
                         "time": "Today at 5:42PM",
-                        "reply": [
+                        "comments": [
                             {
                                 "author": "Elliot Fu",
                                 "pic": "/images/avatar/matthew.png",
