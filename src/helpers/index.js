@@ -1,17 +1,14 @@
 import crypto from 'crypto'
+import bcrypt from 'bcryptjs'
 
-export const randomString = () => {
-	return crypto.randomBytes(50).toString('hex').slice(0,50)
-}
-
-export const sha1passwordHasher = (saltedpassword) => {
-	return crypto.createHash('sha1').update(saltedpassword).digest("hex")
-}
-
-export const md5songHasher = (songUrl) => {
-	return crypto.createHash('md5').update(songUrl).digest("hex")
-}
 
 export const escapeString = (string) => {
 	return string.replace(/[\\"']/g, '\\$&').replace(/\u0000/g, '\\0')
+}
+
+
+export const createHashedPassword = (password) => {
+	let salt = bcrypt.genSaltSync(10);
+	let hash = bcrypt.hashSync(password, salt);
+	return hash
 }

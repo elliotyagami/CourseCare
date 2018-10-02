@@ -1,18 +1,45 @@
-import express from 'express'
-let router = express.Router();
+// import express from 'express'
+// import passport from 'passport'
+
+// let router = express.Router();
+
 import student from './students'
 import tutor from './tutors'
-import {registerUser, register} from './../controllers'
+import bcrypt from 'bcryptjs'
+import { registerUser, register, dashboard } from './../controllers'
 
-router.get('/', (req,res)=>{
-    res.status(200).json({ "status": "running" });
-})
+module.exports =  function (app, passport) {
 
-router.get('/:role/register', register)
-router.post('/:role/register', registerUser)
+    app.get('/', (req, res) => {
+        res.status(200).json({ "status": "running" });
+    })
 
-router.get('/tutor', tutor)
+    app.get('/:role/register', register)
+    app.post('/:role/register', registerUser)
 
-router.get('/student',student)
+    app.get('/:role/dashboard', dashboard)
 
-export default router
+    app.post('/:role/login', function (req, res, next) {
+
+        passport.authenticate('local-login', function (err, user, info) {
+            if (!user) { res.redirect(`/${req.params.role}/register`); }
+            if (user)
+            req.logIn(user, function(err) {
+                res.redirect(`/${req.params.role}/dashboard`);
+            })
+        })(req, res, next)
+    })
+
+
+    app.get('/tutor', tutor)
+
+    app.get('/student', student)
+
+    app.get('/logout', function (req, res) {
+        req.logout();
+        // req.flash('success_msg', 'You are logged out');
+        res.redirect('/student/signin');
+    });
+
+}
+

@@ -11,7 +11,8 @@ router.get('/register', (req, res) => {
 			res.render('main', { songUrl: ``})
 		}
 	} else {
-		res.status(403).json({message: `not logged in <a href='/register'>register first</a>`});
+        res.status(403).json({message: `not logged in <a href='/register'>register first</a>`})
+
 	}
 })
 
