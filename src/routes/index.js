@@ -6,7 +6,7 @@
 import student from './students'
 import tutor from './tutors'
 import bcrypt from 'bcryptjs'
-import { registerUser, register, dashboard, whiteboard} from './../controllers'
+import { registerUser, register, dashboard, whiteboard, discussion} from './../controllers'
 
 module.exports =  function (app, passport) {
 
@@ -20,6 +20,7 @@ module.exports =  function (app, passport) {
     app.get('/:role/dashboard', dashboard)
 
     app.get('/whiteboard', whiteboard)
+    app.get('/discussion', discussion)
 
     app.post('/:role/login', function (req, res, next) {
 
