@@ -1,10 +1,48 @@
-import { randomString, sha1passwordHasher, createHashedPassword } from './../helpers'
-import { insertCookie, insertUser, ifUserPresent } from './../models'
 import models from './../models'
+import {createHashedPassword} from './../helpers'
+
+
+const randomString = () => {
+    return Math.random().toString().substr(2)
+}
+
+export const searchCourseTemplate = (req, res) => {
+    if (req.isAuthenticated() && req.user.role == "student") {
+        console.log("harsh")
+        models.Course.findAll({
+            attributes: ['title', 'description', 'createdAt', 'id'],
+            include: [{
+                model: models.User, as: 'creator',
+                attributes: ['username', 'pic']
+            }]
+        }).then(function (courses){
+            // res.redirect(`/${req.user.type}/whiteboard`)
+            res.render("xhr", { role: req.user.role, type: 'search-course', courses: courses, layout: 'empty.handlebars' })
+        })
+    } else {
+        res.render("")
+    }
+}
 
 export const dashboard = (req, res) => {
     console.log(req.isAuthenticated())
-    if (req.isAuthenticated() ) {
+    if (req.isAuthenticated()) {
+        res.render('dashboard', { role: req.params.role })
+    } else {
+        res.redirect(`/${req.params.role}/register`)
+    }
+}
+
+export const registerCourse = (req, res) => {
+    if (req.isAuthenticated()) {
+        res.render('search-course', { role: req.params.role })
+    } else {
+        res.redirect(`/${req.params.role}/register`)
+    }
+}
+
+export const searchCourse = (req, res) => {
+    if (req.isAuthenticated()) {
         res.render('dashboard', { role: req.params.role })
     } else {
         res.redirect(`/${req.params.role}/register`)
@@ -19,69 +57,73 @@ export const register = (req, res) => {
     }
 }
 
-export const whiteboard = (req, res) => {
-    if (req.isAuthenticated()) {
-        // res.redirect(`/${req.user.type}/whiteboard`)
-        res.render("xhr-whiteboard",{role: req.user.role, layout: 'empty.handlebars'})
-    } else {
-        res.render("")
-    }
-}
-
 export const profile = (req, res) => {
     if (req.isAuthenticated()) {
         // res.redirect(`/${req.user.type}/whiteboard`)
-        res.render("profile",{role: req.user.role})
+        if (req.user.role == "tutor") {
+            models.Course.findAll({
+                attributes: ['password', 'title', 'description', 'createdAt'],
+                where: [{
+                    creatorId: req.user.id
+                }]
+            }).then(function (courses) {
+                console.log(courses)
+                // res.status(200).json({message: courses})
+                res.render("profile", { role: req.user.role, courses: courses })
+            })
+        }
+        else if (req.user.role == "student") {
+            models.User.findAll({
+                where: [{
+                    id: req.user.id
+                }],
+                attributes: ['username'],
+                include: [{
+                    model: models.Course, as: 'courses',
+                    attributes: ['title', 'description', 'createdAt'],
+                    through: {
+                        attributes: ['CourseId', 'UserId'],
+                    }
+                }]
+            }).then(function (courses) {
+                console.log(courses)
+                res.render("profile", { role: req.user.role })
+            })
+        }
+
     } else {
         res.redirect(`/${req.params.role}/register`)
     }
 }
 
-export const discussion = (req, res) => {
-    if (req.isAuthenticated()) {
-        // res.redirect(`/${req.user.type}/whiteboard`)
-        res.render("xhr-discussion",{layout: 'empty.handlebars', "posts": [
-            {
-                "authorpic": "/images/avatar/jenny.jpg",
-                "authorname": "Jenny",
-                "title": "Random text",
-                "time": "3 days ago",
-                "description": "Ours is a life of constant reruns. We're always circling back to where we'd we started, then starting all over again. Even if we don't run extra laps that day, we surely will come back for more of the same another day soon.",
-                "likecount": "5",
-                "comments": [
-                    {
-                        "author": "Matt",
-                        "pic": "/images/avatar/matthew.png",
-                        "text": "How artistic!",
-                        "time": "Today at 5:42PM",
-                        "comments": [
-                            {
-                                "author": "Elliot Fu",
-                                "pic": "/images/avatar/matthew.png",
-                                "text": "This has been very useful for my research. Thanks as well!",
-                                "time": "Yesterday at 12:30AM",
-                                "comments" : []
-                            }
-                        ]
-                    },
-                    {
-                        "author": "Matt",
-                        "pic": "/images/avatar/matthew.png",
-                        "text": "How artistic!",
-                        "time": "Today at 5:42PM",
-                        "comments" : []
-                    }
-                ]
+export const addCourse = (req, res) => {
+    if (req.isAuthenticated() && req.user.role == "tutor") {
+        models.Course.create({
+            'title': req.body.title.trim(),
+            'description': req.body.description.trim(),
+            'creatorId': req.user.id,
+            'password': randomString()
+        }).then(function (course) {
+            if (course) {
+                // res.status(201).json({ message: 'User created' })
+                res.redirect(`/tutor/profile`)
+            } else {
+                res.status(500).json({ message: 'Server error' })
             }
-        ]})
+        })
     } else {
-        res.render("")
+        res.redirect(`/tutor/profile`)
     }
 }
 
-
 export const registerUser = (req, res) => {
-    models.user.findOne({
+    let validRole = ['tutor', 'student'];
+    if (validRole.indexOf(req.params.role) == -1) {
+        res.status(400).json({ message: 'Bad url' });
+        return
+    }
+
+    models.User.findOne({
         where: {
             email: req.body.email,
         }
@@ -98,7 +140,8 @@ export const registerUser = (req, res) => {
                 email: req.body.email.trim(),
                 role: req.params.role,
                 password: hash,
-                gender: req.body.gender
+                gender: req.body.gender,
+                pic: '/images/avatar/matthew.png'
             }
 
             if (req.body.password == req.body.passwordCon) {
@@ -108,46 +151,48 @@ export const registerUser = (req, res) => {
                 return
             }
 
-            models.user.create(trimedObject).then(function (newUser, created) {
+            models.User.create(trimedObject).then(function (newUser, created) {
                 if (newUser) {
                     // res.status(201).json({ message: 'User created' })
                     res.render('register', { role: req.params.role })
-                }else {
+                } else {
                     res.status(500).json({ message: 'Server error' })
                 }
-            })
+            }).catch(function (error) {
+                res.status(400).json({ message: 'Bad request' });
+            });
         }
     })
 }
 
-export const loginUser = (req, res) => {
-    let saltedpassword, hashedpassword;
-    ifUserPresent(req.body.email.trim(), (err, results) => {
-        saltedpassword = results[0].salt + req.body.password.trim()
-        hashedpassword = sha1passwordHasher(saltedpassword)
-        if (hashedpassword == results[0].password) {
-            let generatedCookie = randomString()
+// export const loginUser = (req, res) => {
+//     let saltedpassword, hashedpassword;
+//     ifUserPresent(req.body.email.trim(), (err, results) => {
+//         saltedpassword = results[0].salt + req.body.password.trim()
+//         hashedpassword = sha1passwordHasher(saltedpassword)
+//         if (hashedpassword == results[0].password) {
+//             let generatedCookie = randomString()
 
-            let d = new Date()
-            d.setTime(d.getTime() + (3 * 24 * 60 * 60 * 1000));
-            res.cookie('3dcookie', generatedCookie, { expire: d.toUTCString() })
-            insertCookie({
-                cookie: generatedCookie,
-                email: req.body.email
-            }, (err, result) => {
-                if (err) {
-                    res.status(500).json({ message: 'some error' })
-                } else {
-                    res.redirect('/dashboard')
-                }
-            })
-        }
-        else {
-            res.status(400).json({ message: 'wrong credentials' });
-        }
+//             let d = new Date()
+//             d.setTime(d.getTime() + (3 * 24 * 60 * 60 * 1000));
+//             res.cookie('3dcookie', generatedCookie, { expire: d.toUTCString() })
+//             insertCookie({
+//                 cookie: generatedCookie,
+//                 email: req.body.email
+//             }, (err, result) => {
+//                 if (err) {
+//                     res.status(500).json({ message: 'some error' })
+//                 } else {
+//                     res.redirect('/dashboard')
+//                 }
+//             })
+//         }
+//         else {
+//             res.status(400).json({ message: 'wrong credentials' });
+//         }
 
-    })
-}
+//     })
+// }
 
 
 

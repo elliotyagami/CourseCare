@@ -76,7 +76,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 
-require('./src/config/passport.js')(models.user, passport);
+require('./src/config/passport.js')(models.User, passport);
 require('./src/routes')(app,passport);
 
 

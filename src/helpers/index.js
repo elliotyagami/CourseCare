@@ -1,11 +1,8 @@
-import crypto from 'crypto'
 import bcrypt from 'bcryptjs'
 
-
-export const escapeString = (string) => {
-	return string.replace(/[\\"']/g, '\\$&').replace(/\u0000/g, '\\0')
+export const randomString = () => {
+	return Math.random().toString().substr(2)
 }
-
 
 export const createHashedPassword = (password) => {
 	let salt = bcrypt.genSaltSync(10);

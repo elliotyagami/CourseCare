@@ -1,3 +1,16 @@
+/* authorized */
+.pusher {
+    width: calc(100% - 300px)
+}
+
+.ui.loader {
+    top: 50vh !important;
+}
+.ui.comments .comment .avatar img, .ui.comments .comment img.avatar {
+    height: auto !important;
+}
+
+/* register */
 .register-form {
     width: 70%;
     /* position: relative; */

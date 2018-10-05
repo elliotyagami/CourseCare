@@ -1,5 +1,6 @@
 import passportLocal from 'passport-local'
-
+import Sequelize from 'sequelize'
+let Op = Sequelize.Op
 
 module.exports =  function (User, passport) {
     let LocalStrategy = passportLocal.Strategy;
@@ -33,7 +34,7 @@ module.exports =  function (User, passport) {
         function (req, username, password, done) {
             User.findOne({
                 where: {
-                    $or: [
+                    [Op.or]: [
                         { username: username },
                         { email: username }
                     ]
