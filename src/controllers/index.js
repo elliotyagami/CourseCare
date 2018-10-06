@@ -10,7 +10,6 @@ const randomString = () => {
 
 export const searchCourseTemplate = (req, res) => {
     if (req.isAuthenticated() && req.user.role == "student") {
-        console.log("harsh")
         models.Course.findAll({
             attributes: ['title', 'description', 'createdAt', 'id'],
             include: [{
@@ -25,9 +24,16 @@ export const searchCourseTemplate = (req, res) => {
         res.render("")
     }
 }
+export const index = (req, res) => {
+    if (req.isAuthenticated()) {
+        res.redirect(`/${req.user.role}/profile`)
+
+    } else {
+        res.render("/student/register")
+    }
+}
 export const courseList = (req, res) => {
     if (req.isAuthenticated() && req.user.role == "tutor") {
-        console.log("harsh")
         models.Course.findAll({
             attributes: ['title', 'description', 'createdAt', 'id',  'password'],
             wherer: [
@@ -65,6 +71,8 @@ let dashboardHandler = (rows,req,res) => {
                 }]
             }).then(function(c){
                 c = c ? c : {'students': []}
+                res.cookie('CourseId', req.params.id)
+                res.cookie('TutorId', 2)
                 res.render('dashboard', { role: req.user.role, courseId: req.params.id, students: c.students })
             })
         }else{
@@ -73,7 +81,6 @@ let dashboardHandler = (rows,req,res) => {
     }
 
 export const dashboard = (req, res) => {
-    console.log(req.isAuthenticated())
     if (req.isAuthenticated()) {
         if (req.params.id) {
             if(req.user.role == "student")
@@ -125,21 +132,21 @@ export const registerCourse = (req, res) => {
         })
 
     } else {
-        res.redirect(`/${req.params.role}/dashboard`)
+        res.redirect(`/${req.params.role}/profile`)
     }
 }
 
-export const searchCourse = (req, res) => {
-    if (req.isAuthenticated()) {
-        res.render('dashboard', { role: req.params.role })
-    } else {
-        res.redirect(`/${req.params.role}/dashboard`)
-    }
-}
+// export const searchCourse = (req, res) => {
+//     if (req.isAuthenticated()) {
+//         res.render('dashboard', { role: req.params.role })
+//     } else {
+//         res.redirect(`/${req.params.role}/profile`)
+//     }
+// }
 
 export const register = (req, res) => {
     if (req.isAuthenticated()) {
-        res.redirect(`/${req.user.role}/dashboard`)
+        res.redirect(`/${req.user.role}/profile`)
     } else {
         res.render('register', { role: req.params.role })
     }
@@ -155,7 +162,6 @@ export const profile = (req, res) => {
                     creatorId: req.user.id
                 }]
             }).then(function (courses) {
-                console.log(courses)
                 // res.status(200).json({message: courses})
                 res.render("profile", { role: req.user.role, courses: courses })
             })
@@ -174,7 +180,6 @@ export const profile = (req, res) => {
                     }
                 }]
             }).then(function (user) {
-                console.log(user.courses)
                 res.render("profile", { role: req.user.role, courses: user.courses })
             })
         }
@@ -251,35 +256,6 @@ export const registerUser = (req, res) => {
         }
     })
 }
-
-// export const loginUser = (req, res) => {
-//     let saltedpassword, hashedpassword;
-//     ifUserPresent(req.body.email.trim(), (err, results) => {
-//         saltedpassword = results[0].salt + req.body.password.trim()
-//         hashedpassword = sha1passwordHasher(saltedpassword)
-//         if (hashedpassword == results[0].password) {
-//             let generatedCookie = randomString()
-
-//             let d = new Date()
-//             d.setTime(d.getTime() + (3 * 24 * 60 * 60 * 1000));
-//             res.cookie('3dcookie', generatedCookie, { expire: d.toUTCString() })
-//             insertCookie({
-//                 cookie: generatedCookie,
-//                 email: req.body.email
-//             }, (err, result) => {
-//                 if (err) {
-//                     res.status(500).json({ message: 'some error' })
-//                 } else {
-//                     res.redirect('/dashboard')
-//                 }
-//             })
-//         }
-//         else {
-//             res.status(400).json({ message: 'wrong credentials' });
-//         }
-
-//     })
-// }
 
 
 

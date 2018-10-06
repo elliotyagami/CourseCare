@@ -5,10 +5,10 @@
         <i class="user icon"></i>
         Profile
     </a> --}}
-    <a class="item" href="/{{role}}/dashboard">
+    {{!-- <a class="item" href="/{{role}}/dashboard">
         <i class="ellipsis vertical icon"></i>
         Dashboard
-    </a>
+    </a> --}}
     {{#ifeq "student" role}}
     <a class="item" onclick="navigate('/course/search')">
         <i class="search icon"></i>
@@ -48,7 +48,6 @@
     function navigate(path) {
         $('#loader').removeClass('disabled').addClass('active')
         $.get(path, function (data) {
-            console.log(data)
             $('#loader').addClass('disabled').removeClass('active')
             $(".main-screen").html(data);
         });

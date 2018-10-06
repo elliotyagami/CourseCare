@@ -6,14 +6,12 @@
 import bcrypt from 'bcryptjs'
 // import tutor from './tutor'
 // import student from './student'
-import { registerUser, register, dashboard, profile, addCourse, registerCourse, courseList, searchCourseTemplate} from './../controllers'
+import { index, registerUser, register, dashboard, profile, addCourse, registerCourse, courseList, searchCourseTemplate} from './../controllers'
 import { whiteboard, discussion, addCourseTemplate,registerCourseTemplate} from './../controllers/ajax'
 
 module.exports =  function (app, passport) {
 
-    app.get('/', (req, res) => {
-        res.status(200).json({ "status": "running" });
-    })
+    app.get('/', index)
 
     app.get('/whiteboard', whiteboard)
     app.get('/discussion', discussion)
@@ -38,7 +36,8 @@ module.exports =  function (app, passport) {
             if (!user) { res.redirect(`/${req.params.role}/register`); }
             if (user)
             req.logIn(user, function(err) {
-                res.redirect(`/${req.user.role}/dashboard`);
+                res.cookie('UserId', req.user.id)
+                res.redirect(`/${req.user.role}/profile`);
             })
         })(req, res, next)
     })

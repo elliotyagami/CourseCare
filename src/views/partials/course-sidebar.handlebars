@@ -29,7 +29,6 @@
         let url = $(this).attr('value');
         $('#loader').removeClass('disabled').addClass('active')
         $.get( "/" + url, function( data ) {
-            console.log(data)
             $('#loader').addClass('disabled').removeClass('active')
             $( ".main-screen" ).html(data);
         });

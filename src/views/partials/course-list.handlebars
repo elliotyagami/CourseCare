@@ -42,10 +42,7 @@
 {{/each}}
 <script>
     $(document).ready(function(){
-            console.log('t')
-            console.log($('.utcstring').length)
         $('.ago').each(function (){
-            console.log('a')
             let a = daysAgo($(this).attr('value'));
             $(this).html(a);
         })
