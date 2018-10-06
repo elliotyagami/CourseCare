@@ -8,7 +8,7 @@ let sequelize = new Sequelize(config.database, config.username, config.password,
 
 let db = {};
 
-let arr = ['index.js', 'post.js', 'reply.js', 'course-register.js', 'comment.js']
+let arr = ['index.js', 'post.js', 'reply.js', 'comment.js']
 
 fs
     .readdirSync(__dirname)

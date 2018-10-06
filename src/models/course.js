@@ -30,6 +30,7 @@ export default function(sequelize, Sequelize) {
           as: 'creator'
         });
         Course.belongsToMany(models.User,  {through: 'CourseRegister',  as: 'students'});
+        // console.log(Course.prototype)
       };
 
     return Course;

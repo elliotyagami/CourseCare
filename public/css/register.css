@@ -10,6 +10,10 @@
     height: auto !important;
 }
 
+.capitalize {
+    text-transform:capitalize;
+}
+
 /* register */
 .register-form {
     width: 70%;

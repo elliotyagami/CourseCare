@@ -1,5 +1,7 @@
 import models from './../models'
-import {createHashedPassword} from './../helpers'
+import Sequelize from 'sequelize'
+let Op = Sequelize.Op
+import { createHashedPassword } from './../helpers'
 
 
 const randomString = () => {
@@ -15,7 +17,7 @@ export const searchCourseTemplate = (req, res) => {
                 model: models.User, as: 'creator',
                 attributes: ['username', 'pic']
             }]
-        }).then(function (courses){
+        }).then(function (courses) {
             // res.redirect(`/${req.user.type}/whiteboard`)
             res.render("xhr", { role: req.user.role, type: 'search-course', courses: courses, layout: 'empty.handlebars' })
         })
@@ -23,21 +25,107 @@ export const searchCourseTemplate = (req, res) => {
         res.render("")
     }
 }
+export const courseList = (req, res) => {
+    if (req.isAuthenticated() && req.user.role == "tutor") {
+        console.log("harsh")
+        models.Course.findAll({
+            attributes: ['title', 'description', 'createdAt', 'id',  'password'],
+            wherer: [
+                {
+                    creatorId: req.user.role
+                }
+            ],
+            // order: ['createdAt DESC']
+        }).then(function (courses) {
+            res.render("xhr", { role: req.user.role, type: 'course-list', courseList: courses, layout: 'empty.handlebars' })
+        })
+    } else {
+        res.render("")
+    }
+}
+
+let dashboardHandler = (rows,req,res) => {
+    if (rows) {
+        let obj = {
+            id: {
+                [Op.ne]: req.params.id
+            }
+        };
+        if (req.user.role == "tutor"){
+            obj = {};
+        }
+        models.Course.find({
+            where: [{
+                id: req.params.id
+                }],
+                include: [{
+                    model: models.User, as: 'students',
+                    attributes: ['username', 'pic', 'firstname' , 'lastname', ['id', 'userid']],
+                    where: obj
+                }]
+            }).then(function(c){
+                c = c ? c : {'students': []}
+                res.render('dashboard', { role: req.user.role, courseId: req.params.id, students: c.students })
+            })
+        }else{
+            res.status(401).json({'message': 'access denied'})
+        }
+    }
 
 export const dashboard = (req, res) => {
     console.log(req.isAuthenticated())
     if (req.isAuthenticated()) {
-        res.render('dashboard', { role: req.params.role })
+        if (req.params.id) {
+            if(req.user.role == "student")
+            models.CourseRegister.find({
+                where: {
+                    CourseId: req.params.id,
+                    UserId: req.user.id
+                }
+            }).then((rows) =>dashboardHandler(rows,req,res))
+
+            if(req.user.role == "tutor")
+            models.Course.find({
+                where: [
+                    {
+                        id: req.params.id,
+                        creatorId: req.user.id
+                    }
+                ]
+            }).then((rows) =>dashboardHandler(rows,req,res))
+        }else{
+            res.render('dashboard', { role: req.params.role })
+        }
     } else {
         res.redirect(`/${req.params.role}/register`)
     }
 }
 
 export const registerCourse = (req, res) => {
-    if (req.isAuthenticated()) {
-        res.render('search-course', { role: req.params.role })
+    if (req.isAuthenticated() && req.user.role == "student") {
+        models.Course.find({
+            attributes: ['title', 'id'],
+            where: {
+                id: req.body.id,
+                password: req.body.password
+            }
+        }).then(function (course) {
+            if (course) {
+                models.CourseRegister.create({
+                    CourseId: parseInt(req.body.id),
+                    UserId: req.user.id
+                }).then(function (registered) {
+                        res.redirect("/user/profile")
+                    })
+            }else {
+                res.status(401).json({ message: "authorization failed" })
+            }
+        }).catch(function(err){
+            console.log(err)
+        })
+
     } else {
-        res.redirect(`/${req.params.role}/register`)
+        res.redirect(`/${req.params.role}/dashboard`)
     }
 }
 
@@ -45,7 +133,7 @@ export const searchCourse = (req, res) => {
     if (req.isAuthenticated()) {
         res.render('dashboard', { role: req.params.role })
     } else {
-        res.redirect(`/${req.params.role}/register`)
+        res.redirect(`/${req.params.role}/dashboard`)
     }
 }
 
@@ -62,7 +150,7 @@ export const profile = (req, res) => {
         // res.redirect(`/${req.user.type}/whiteboard`)
         if (req.user.role == "tutor") {
             models.Course.findAll({
-                attributes: ['password', 'title', 'description', 'createdAt'],
+                attributes: ['id','password', 'title', 'description', 'createdAt'],
                 where: [{
                     creatorId: req.user.id
                 }]
@@ -73,24 +161,23 @@ export const profile = (req, res) => {
             })
         }
         else if (req.user.role == "student") {
-            models.User.findAll({
+            models.User.find({
                 where: [{
                     id: req.user.id
                 }],
                 attributes: ['username'],
                 include: [{
                     model: models.Course, as: 'courses',
-                    attributes: ['title', 'description', 'createdAt'],
+                    attributes: ['title', 'description', 'createdAt', 'id'],
                     through: {
                         attributes: ['CourseId', 'UserId'],
                     }
                 }]
-            }).then(function (courses) {
-                console.log(courses)
-                res.render("profile", { role: req.user.role })
+            }).then(function (user) {
+                console.log(user.courses)
+                res.render("profile", { role: req.user.role, courses: user.courses })
             })
         }
-
     } else {
         res.redirect(`/${req.params.role}/register`)
     }

@@ -16,5 +16,13 @@
     <a class="item">
         <i class="child icon"></i>
         Classmates
+        <div class="menu">
+            {{#each students}}
+        <a class="item" onclick="javascript:register_popup('{{username}}', '{{username}}')">
+            <img class="ui avatar image" src="{{pic}}"> {{username}}
+        </a>
+             {{/each}}
+
+        </div>
     </a>
 </div>

@@ -6,7 +6,7 @@
 import bcrypt from 'bcryptjs'
 // import tutor from './tutor'
 // import student from './student'
-import { registerUser, register, dashboard, profile, addCourse, registerCourse, searchCourseTemplate} from './../controllers'
+import { registerUser, register, dashboard, profile, addCourse, registerCourse, courseList, searchCourseTemplate} from './../controllers'
 import { whiteboard, discussion, addCourseTemplate,registerCourseTemplate} from './../controllers/ajax'
 
 module.exports =  function (app, passport) {
@@ -22,13 +22,15 @@ module.exports =  function (app, passport) {
     app.get('/course/register', registerCourseTemplate)
     app.get('/course/register/:id', registerCourseTemplate)
 
-    app.post('/course/register/:id', registerCourse)
+    app.post('/course/register', registerCourse)
     app.post('/course/add', addCourse)
+    app.get('/course/list', courseList)
 
     app.get('/:role/register', register)
     app.post('/:role/register', registerUser)
     app.get('/:role/dashboard', dashboard)
     app.get('/:role/profile', profile)
+    app.get('/:role/dashboard/:id', dashboard)
 
     app.post('/:role/login', function (req, res, next) {
 
@@ -46,9 +48,11 @@ module.exports =  function (app, passport) {
     // app.use('/student', student)
 
     app.get('/logout', function (req, res) {
+        let role = req.user.role;
+        role = role ? role : 'student';
         req.logout();
         // req.flash('success_msg', 'You are logged out');
-        res.redirect('/student/signin');
+        res.redirect(`/${role}/register`);
     });
 
 }
