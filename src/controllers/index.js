@@ -29,7 +29,7 @@ export const index = (req, res) => {
         res.redirect(`/${req.user.role}/profile`)
 
     } else {
-        res.render("/student/register")
+        res.redirect("/student/register")
     }
 }
 export const courseList = (req, res) => {

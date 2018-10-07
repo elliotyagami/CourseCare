@@ -6,12 +6,27 @@
 import bcrypt from 'bcryptjs'
 // import tutor from './tutor'
 // import student from './student'
-import { index, registerUser, register, dashboard, profile, addCourse, registerCourse, courseList, searchCourseTemplate} from './../controllers'
-import { whiteboard, discussion, addCourseTemplate,registerCourseTemplate} from './../controllers/ajax'
+import { index, registerUser, register, dashboard, profile, addCourse, registerCourse, courseList, searchCourseTemplate } from './../controllers'
+import { whiteboard, discussion, addCourseTemplate, registerCourseTemplate } from './../controllers/ajax'
 
-module.exports =  function (app, passport) {
+module.exports = function (app, passport) {
 
     app.get('/', index)
+
+
+    // facebook oauth
+
+    app.get('/auth/facebook', passport.authenticate('facebook'))
+    app.get('/auth/facebook/callback',  function (req, res, next) {
+        passport.authenticate('facebook', function (err, user, info) {
+            if (!user) { res.redirect(`/${req.params.role}/register`); }
+            if (user)
+                req.logIn(user, function (err) {
+                    res.cookie('UserId', req.user.id)
+                    res.redirect(`/${req.user.role}/profile`);
+                })
+        })(req, res, next)
+    })
 
     app.get('/whiteboard', whiteboard)
     app.get('/discussion', discussion)
@@ -35,10 +50,10 @@ module.exports =  function (app, passport) {
         passport.authenticate('local-login', function (err, user, info) {
             if (!user) { res.redirect(`/${req.params.role}/register`); }
             if (user)
-            req.logIn(user, function(err) {
-                res.cookie('UserId', req.user.id)
-                res.redirect(`/${req.user.role}/profile`);
-            })
+                req.logIn(user, function (err) {
+                    res.cookie('UserId', req.user.id)
+                    res.redirect(`/${req.user.role}/profile`);
+                })
         })(req, res, next)
     })
 

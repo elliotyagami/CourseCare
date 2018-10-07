@@ -1,9 +1,14 @@
 import passportLocal from 'passport-local'
+import passportFacebook from 'passport-facebook'
 import Sequelize from 'sequelize'
 let Op = Sequelize.Op
 
+import dotenv from 'dotenv'
+dotenv.config()
+
 module.exports =  function (User, passport) {
     let LocalStrategy = passportLocal.Strategy;
+    let FacebookStrategy = passportFacebook.Strategy;
 
     passport.serializeUser(function (user, done) {
         console.log('searialUser')
@@ -24,6 +29,22 @@ module.exports =  function (User, passport) {
             }
         });
     });
+
+    passport.use(new FacebookStrategy({
+        clientID: process.env.facebook_api_key,
+        clientSecret: process.env.facebook_api_secret,
+        callbackURL: "http://localhost:3000/auth/facebook/callback"
+      },
+      function(accessToken, refreshToken, profile, done) {
+          console.log(profile)
+        // User.findOrCreate({
+
+        // }, function(err, user) {
+        //   if (err) { return done(err); }
+        //   done(null, user);
+        // });
+      }
+    ));
 
     passport.use('local-login', new LocalStrategy(
         {
