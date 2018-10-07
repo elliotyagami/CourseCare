@@ -2,6 +2,7 @@ import passportLocal from 'passport-local'
 import passportFacebook from 'passport-facebook'
 import Sequelize from 'sequelize'
 let Op = Sequelize.Op
+import models from './../models'
 
 import dotenv from 'dotenv'
 dotenv.config()
@@ -37,12 +38,19 @@ module.exports =  function (User, passport) {
       },
       function(accessToken, refreshToken, profile, done) {
           console.log(profile)
-        // User.findOrCreate({
-
-        // }, function(err, user) {
-        //   if (err) { return done(err); }
-        //   done(null, user);
-        // });
+        User.findOrCreate({
+            firstname: profile.name.givenName,
+            lastname: profile.name.familyName,
+            username: profile.username,
+            email: "a@aasa.ass",
+            role: profile.provider,
+            password: "facebook",
+            gender: profile.gender,
+            pic: profile.profileUrl
+        }, function(err, user) {
+          if (err) { return done(err); }
+          done(null,user);
+        });
       }
     ));
 
