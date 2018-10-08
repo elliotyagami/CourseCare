@@ -109,7 +109,7 @@ module.exports = function (User, passport) {
                 defaults: obj
             }).spread(function (userResult, created) {
                 if (!userResult) { return done(null); }
-                done(null, user);
+                done(null, userResult);
             })
         }
     ));
@@ -145,7 +145,7 @@ module.exports = function (User, passport) {
                 defaults: obj
             }).spread(function (userResult, created) {
                 if (!userResult) { return done(null); }
-                done(null, user);
+                done(null, userResult);
             })
         }
     ));
