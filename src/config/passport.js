@@ -4,6 +4,7 @@ import Sequelize from 'sequelize'
 let Op = Sequelize.Op
 import models from './../models'
 import Mitter from '@mitter-io/node'
+import passportGoogle from 'passport-google-oauth'
 
 
 import dotenv from 'dotenv'
@@ -23,6 +24,7 @@ const userClient = mitter.clients().users()
 
 module.exports = function (User, passport) {
     let LocalStrategy = passportLocal.Strategy;
+    let GoogleStrategy = passportGoogle.OAuth2Strategy;
     let FacebookStrategy = passportFacebook.Strategy;
 
     passport.serializeUser(function (user, done) {
@@ -97,6 +99,20 @@ module.exports = function (User, passport) {
                 done(null, user);
             });
         }
+    ));
+
+    passport.use(new GoogleStrategy({
+        clientID: process.env.GOOGLE_CLIENT_ID,
+        clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+        callbackURL:  `${process.env.website}/auth/google/callback`
+      },
+      function(accessToken, refreshToken, profile, done) {
+          console.log(profile)
+        //    User.findOrCreate({ googleId: profile.id }, function (err, user) {
+        //      return done(err, user);
+        //    });
+        done(null, profile);
+      }
     ));
 
     passport.use('local-login', new LocalStrategy(

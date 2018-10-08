@@ -210,7 +210,7 @@ function initialize(){
     mitter = web.Mitter.forWeb(
         getCookie("applicationId"),
         [function(){}],
-        'https://api.staging.mitter.io'
+        'https://api.mitter.io'
     )
     mitter.setUserAuthorization(getCookie('recipient'))
 }
@@ -971,9 +971,9 @@ module.exports =  initialize
             _this.cachedUserId = undefined;
             _this.mitterAxiosInterceptor = new MitterAxiosApiInterceptor(
             /* the application if */
-            _this.applicationId, 
+            _this.applicationId,
             /* The generic request interceptor to use */
-            new UserAuthorizationInterceptor(function () { return _this.cachedUserAuthorization; }, _this.applicationId).getInterceptor(), 
+            new UserAuthorizationInterceptor(function () { return _this.cachedUserAuthorization; }, _this.applicationId).getInterceptor(),
             /* The base url for mitter apis */
             _this.mitterApiBaseUrl);
             _this.subscriptions = [];
@@ -3380,9 +3380,9 @@ module.exports =  initialize
           _this.cachedUserId = undefined;
           _this.mitterAxiosInterceptor = new MitterAxiosApiInterceptor(
           /* the application if */
-          _this.applicationId, 
+          _this.applicationId,
           /* The generic request interceptor to use */
-          new UserAuthorizationInterceptor(function () { return _this.cachedUserAuthorization; }, _this.applicationId).getInterceptor(), 
+          new UserAuthorizationInterceptor(function () { return _this.cachedUserAuthorization; }, _this.applicationId).getInterceptor(),
           /* The base url for mitter apis */
           _this.mitterApiBaseUrl);
           _this.subscriptions = [];
@@ -9576,7 +9576,7 @@ module.exports =  initialize
   //
   //   Stomp Over WebSocket http://www.jmesnil.net/stomp-websocket/doc/ | Apache License V2.0
   //
-  // The library can be used in node.js app to connect to STOMP brokers over TCP 
+  // The library can be used in node.js app to connect to STOMP brokers over TCP
   // or Web sockets.
 
   // Root of the `stompjs module`

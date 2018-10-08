@@ -22,7 +22,7 @@ function initialize(){
     mitter = web.Mitter.forWeb(
         getCookie("applicationId"),
         [function(){}],
-        'https://api.staging.mitter.io'
+        'https://api.mitter.io'
     )
     mitter.setUserAuthorization(getCookie('recipient'))
 }

@@ -17,12 +17,29 @@ module.exports = function (app, passport) {
     // facebook oauth
 
     app.get('/auth/facebook', passport.authenticate('facebook'))
-    app.get('/auth/facebook/callback',  function (req, res, next) {
+
+    app.get('/auth/google', passport.authenticate('google', { scope: ['https://www.googleapis.com/auth/plus.login'] }))
+
+    app.get('/auth/google/callback', function (req, res, next) {
+        passport.authenticate('google', function (err, user, info) {
+            if (!user) { res.redirect(`/${req.params.role}/register`); }
+            if (user)
+                // req.logIn(user, function (err) {
+                req.logIn([user, res], function (err) {
+                    console.log(req.user)
+                    res.cookie('UserId', user.id)
+                    res.cookie('recipient', user.token)
+                    res.redirect(`/${user.role}/profile`);
+                })
+        })(req, res, next)
+    })
+
+    app.get('/auth/facebook/callback', function (req, res, next) {
         passport.authenticate('facebook', function (err, user, info) {
             if (!user) { res.redirect(`/${req.params.role}/register`); }
             if (user)
                 // req.logIn(user, function (err) {
-                req.logIn([user,res], function (err) {
+                req.logIn([user, res], function (err) {
                     console.log(req.user)
                     res.cookie('UserId', user.id)
                     res.cookie('recipient', user.token)
@@ -53,8 +70,8 @@ module.exports = function (app, passport) {
         passport.authenticate('local-login', function (err, user, info) {
             if (!user) { res.redirect(`/${req.params.role}/register`); }
             if (user)
-                req.logIn([user,res], function (err) {
-                // req.logIn(user, function (err) {
+                req.logIn([user, res], function (err) {
+                    // req.logIn(user, function (err) {
                     res.cookie('UserId', user.id)
                     console.log(user.password)
                     res.redirect(`/${user.role}/profile`);

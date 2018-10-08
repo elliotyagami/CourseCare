@@ -6,7 +6,7 @@
         Tutors
         <div class="menu">
             {{#with tutor}}
-                 <a class="item" onclick="javascript:register_popup('{{username}}', '{{username}}')">
+                 <a class="item" onclick="javascript:register_popup('{{id}}', '{{username}}')">
             <img class="ui avatar image" src="{{pic}}"> {{firstname}} {{lastname}}
         </a>
             {{/with}}
@@ -17,7 +17,7 @@
         Classmates
         <div class="menu">
             {{#each students}}
-        <a class="item" onclick="javascript:register_popup('{{username}}', '{{username}}')">
+        <a class="item" onclick="javascript:register_popup('{{id}}', '{{username}}')">
             <img class="ui avatar image" src="{{pic}}"> {{firstname}} {{lastname}}
         </a>
              {{/each}}
