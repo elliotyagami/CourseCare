@@ -10,7 +10,7 @@ export const createHashedPassword = (password) => {
 	return hash
 }
 
-function getPicture(gender){
+export const getPicture = (gender) => {
 	let maleImg = ['elliot.jpg', 'matthew.png', 'steve.jpg']
 	let femaleImg = ['jenny.jpg', 'lindsay.png', 'rachel.jpg', 'veronika.jpg']
 	if (gender == 'female'){
