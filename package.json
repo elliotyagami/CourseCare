@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "babel-node": "babel-node",
-    "start": "nodemon --exec npm run babel-node -- ./app.js"
+    "start": "nodemon --exec npm run babel-node -- ./app.js",
+    "server": "babel-node ./app.js"
   },
   "author": "harsh jain",
   "license": "MIT",
