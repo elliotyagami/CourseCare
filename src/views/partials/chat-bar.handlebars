@@ -5,12 +5,11 @@
         <i class="user icon"></i>
         Tutors
         <div class="menu">
-            <a class="item" onclick="javascript:register_popup('Enterprise', 'Enterprise')">
-                <img class="ui avatar image" src="/images/avatar/matthew.png"> Enterprise
-            </a>
-            <a class="item" onclick="javascript:register_popup('Consumer', 'Consumer')">
-                <img class="ui avatar image" src="/images/avatar/jenny.jpg"> Consumer
-            </a>
+            {{#with tutor}}
+                 <a class="item" onclick="javascript:register_popup('{{username}}', '{{username}}')">
+            <img class="ui avatar image" src="{{pic}}"> {{firstname}} {{lastname}}
+        </a>
+            {{/with}}
         </div>
     </a>
     <a class="item">
@@ -19,7 +18,7 @@
         <div class="menu">
             {{#each students}}
         <a class="item" onclick="javascript:register_popup('{{username}}', '{{username}}')">
-            <img class="ui avatar image" src="{{pic}}"> {{username}}
+            <img class="ui avatar image" src="{{pic}}"> {{firstname}} {{lastname}}
         </a>
              {{/each}}
 

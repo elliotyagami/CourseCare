@@ -8,7 +8,7 @@ let sequelize = new Sequelize(config.database, config.username, config.password,
 
 let db = {};
 
-let arr = ['index.js', 'post.js', 'reply.js', 'comment.js']
+let arr = ['index.js', 'post.js', 'reply.js', 'token.js', 'comment.js']
 
 fs
     .readdirSync(__dirname)
@@ -18,7 +18,6 @@ fs
     })
     .forEach(function(file) {
         var model = sequelize.import(path.join(__dirname, file));
-        console.log(model.name)
         db[model.name] = model;
     });
 

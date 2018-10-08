@@ -1,14 +1,14 @@
 <h3 class="ui header">Whiteboard</h3>
 <canvas class="whiteboard" id="whiteboard"></canvas>
 
-{{#ifeq role "student"}}
+{{#ifeq userData.role "student"}}
 <div id="agora_tutor" style="float:right;width:210px;height:147px;display:inline-block;"></div>
 {{/ifeq}}
 
 <div id="agora_local" style="float:right;width:210px;height:147px;display:inline-block;"></div>
 
 <div class="basic segment">
-    {{#ifeq role "tutor"}}
+    {{#ifeq userData.role "tutor"}}
     <button class="ui color black button"></button>
     <button class="ui color red button"></button>
     <button class="ui color green button"></button>
@@ -39,13 +39,13 @@
             </button>
         </div>
 </div>
-{{#ifeq "tutor" role}}
+{{#ifeq "tutor" userData.role}}
 <script src="/js/whiteboard.js"></script> {{else}}
 <script src="/js/whiteboard-client.js"></script> {{/ifeq}}
 
 <div class="other-views">
 </div>
 
-{{#ifeq "tutor" role}}
+{{#ifeq "tutor" userData.role}}
 <script src="/js/agora-streaming.js"></script> {{else}}
 <script src="/js/agora-listener-only.js"></script> {{/ifeq}}
