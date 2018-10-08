@@ -3,6 +3,7 @@ import passportFacebook from 'passport-facebook'
 import Sequelize from 'sequelize'
 let Op = Sequelize.Op
 import models from './../models'
+import {getPicture} from './../helpers'
 import Mitter from '@mitter-io/node'
 import passportGoogle from 'passport-google-oauth'
 
@@ -81,12 +82,14 @@ module.exports = function (User, passport) {
     passport.use(new FacebookStrategy({
         clientID: process.env.facebook_api_key,
         clientSecret: process.env.facebook_api_secret,
+        passReqToCallback: true,
         callbackURL: `${process.env.website}/auth/facebook/callback`
     },
-        function (accessToken, refreshToken, profile, done) {
+        function (req, accessToken, refreshToken, profile, done) {
             console.log(profile)
             let role = req.cookies.role
             let gender  = profile.gender
+            // let email = profile.emails[0].value
             let obj = {
                 firstname: profile.name.givenName,
                 lastname: profile.name.familyName,
@@ -95,7 +98,7 @@ module.exports = function (User, passport) {
                 role: role? role: "student",
                 password: profile.provider,
                 gender: gender? gender : "male",
-                pic: profile.profileUrl
+                pic: getPicture(gender)
             }
             console.log(obj)
             User.findOrCreate(obj, function (err, user) {
@@ -108,17 +111,20 @@ module.exports = function (User, passport) {
     passport.use(new GoogleStrategy({
         clientID: process.env.GOOGLE_CLIENT_ID,
         clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+        passReqToCallback: true,
         callbackURL:  `${process.env.website}/auth/google/callback`
       },
-      function(accessToken, refreshToken, profile, done) {
+      function(req, accessToken, refreshToken, profile, done) {
         console.log(profile)
         let role = req.cookies.role
         let gender  = profile.gender
+        let email = profile.emails[0].value
+        email ? email : profile.id + '@gmail.com'
         let obj = {
             firstname: profile.name.givenName,
             lastname: profile.name.familyName,
             username: profile.id.toString(),
-            email: profile.id + '@gmail.com',
+            email: email,
             role: 'student',
             password: profile.provider,
             gender: gender? gender : "male",

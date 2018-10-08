@@ -16,7 +16,7 @@ module.exports = function (app, passport) {
 
     // facebook oauth
 
-    app.get('/auth/facebook', passport.authenticate('facebook', {scope: ['picture', 'first_name', 'last_name', 'email']}))
+    app.get('/auth/facebook', passport.authenticate('facebook', {scope: ['first_name', 'last_name', 'email']}))
 
     app.get('/auth/google', passport.authenticate('google', { scope: ['https://www.googleapis.com/auth/plus.login', 'email'] }))
 
