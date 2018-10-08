@@ -92,11 +92,6 @@ module.exports = function (User, passport) {
             let gender = profile.gender
             gender = gender ?gender : "male"
             let email = profile.emails[0].value
-            console.log(profile.id)
-            console.log(profile.name)
-            console.log(email)
-            console.log(role)
-            console.log(gender)
             let obj = {
                 firstname: profile.name.givenName,
                 lastname: profile.name.familyName,
@@ -131,7 +126,6 @@ module.exports = function (User, passport) {
         function (req, accessToken, refreshToken, profile, done) {
             console.log(profile)
             let role = req.cookies.role
-            console.log(req.cookies)
             let gender = profile.gender
             let email = profile.emails[0].value
             email ? email : profile.id + '@gmail.com'
@@ -140,7 +134,7 @@ module.exports = function (User, passport) {
                 lastname: profile.name.familyName,
                 username: profile.id.toString(),
                 email: email,
-                role: 'student',
+                role: role,
                 password: profile.provider,
                 gender: gender ? gender : "male",
                 pic: profile.photos[0].value
