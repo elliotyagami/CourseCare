@@ -87,7 +87,7 @@ module.exports = function (User, passport) {
             console.log(profile)
             let role = req.cookies.role
             let gender  = profile.gender
-            User.findOrCreate({
+            let obj = {
                 firstname: profile.name.givenName,
                 lastname: profile.name.familyName,
                 username: profile.username,
@@ -96,7 +96,9 @@ module.exports = function (User, passport) {
                 password: profile.provider,
                 gender: gender? gender : "male",
                 pic: profile.profileUrl
-            }, function (err, user) {
+            }
+            console.log(obj)
+            User.findOrCreate(obj, function (err, user) {
                 if (err) { return done(err); }
                 done(null, user);
             });
@@ -112,7 +114,7 @@ module.exports = function (User, passport) {
         console.log(profile)
         let role = req.cookies.role
         let gender  = profile.gender
-        User.findOrCreate({
+        let obj = {
             firstname: profile.name.givenName,
             lastname: profile.name.familyName,
             username: profile.id.toString(),
@@ -121,7 +123,9 @@ module.exports = function (User, passport) {
             password: profile.provider,
             gender: gender? gender : "male",
             pic: profile.photos[0].value
-        }, function (err, user) {
+        }
+        console.log(obj)
+        User.findOrCreate(obj, function (err, user) {
             if (err) { return done(err); }
             done(null, user);
         });
