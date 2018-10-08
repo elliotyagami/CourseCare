@@ -90,12 +90,12 @@ module.exports = function (User, passport) {
             console.log(profile)
             let role = req.cookies.role
             let gender = profile.gender
-            let email = profile.id + '@facebook.com'
-            // let email = profile.emails[0].value
+            gender = gender ?gender : "male"
+            let email = profile.emails[0].value
             let obj = {
                 firstname: profile.name.givenName,
                 lastname: profile.name.familyName,
-                username: profile.username,
+                username: profile.id,
                 email: email,
                 role: role ? role : "student",
                 password: profile.provider,
