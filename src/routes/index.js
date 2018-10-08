@@ -27,7 +27,6 @@ module.exports = function (app, passport) {
             if (user)
                 // req.logIn(user, function (err) {
                 req.logIn([user, res], function (err) {
-                    console.log(req.user)
                     res.cookie('UserId', user.id)
                     res.cookie('recipient', user.token)
                     res.redirect(`/${user.role}/profile`);
@@ -42,7 +41,6 @@ module.exports = function (app, passport) {
             if (user)
                 // req.logIn(user, function (err) {
                 req.logIn([user, res], function (err) {
-                    console.log(req.user)
                     res.cookie('UserId', user.id)
                     res.cookie('recipient', user.token)
                     res.redirect(`/${user.role}/profile`);
@@ -75,7 +73,6 @@ module.exports = function (app, passport) {
                 req.logIn([user, res], function (err) {
                     // req.logIn(user, function (err) {
                     res.cookie('UserId', user.id)
-                    console.log(user.password)
                     res.redirect(`/${user.role}/profile`);
                 })
         })(req, res, next)

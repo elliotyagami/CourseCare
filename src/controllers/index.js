@@ -165,6 +165,7 @@ export const register = (req, res) => {
 }
 
 export const profile = (req, res) => {
+    // console.log(req.session.passport)
     if (req.isAuthenticated()) {
         // res.redirect(`/${req.user.type}/whiteboard`)
         if (req.user.role == "tutor") {
