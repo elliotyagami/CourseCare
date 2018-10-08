@@ -83,7 +83,8 @@ module.exports = function (User, passport) {
         clientID: process.env.facebook_api_key,
         clientSecret: process.env.facebook_api_secret,
         passReqToCallback: true,
-        callbackURL: `${process.env.website}/auth/facebook/callback`
+        callbackURL: `${process.env.website}/auth/facebook/callback`,
+        profileFields: ['id', 'email', 'gender', 'link', 'locale', 'name']
     },
         function (req, accessToken, refreshToken, profile, done) {
             console.log(profile)
