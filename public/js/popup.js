@@ -76,7 +76,7 @@ function register_popup(id, name)
     var element = '<div class="popup-head">';
     element = element + '<div class="popup-head-left">'+ name +'</div>';
     element = element + '<div class="popup-head-right"><a href="javascript:close_popup(\''+ id +'\');">&#10005;</a></div>';
-    element = element + '<div style="clear: both"></div></div><div class="popup-messages" id="user-' +id+'"></div><div class="reply"><input type="text"><button style="right:float" onclick="broker('+id+')">send</button></div>';
+    element = element + '<div style="clear: both"></div></div><div class="popup-messages" id="user-' +id+'"></div><div class="chat-reply"><input type="text"><button style="right:float" onclick="broker('+id+')">send</button></div>';
     let chatBox = document.createElement("div");
     chatBox.setAttribute('class', 'popup-box chat-popup');
     chatBox.setAttribute('id', id);

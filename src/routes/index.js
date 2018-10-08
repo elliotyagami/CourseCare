@@ -7,7 +7,7 @@ import bcrypt from 'bcryptjs'
 // import tutor from './tutor'
 // import student from './student'
 import { index, registerUser, register, dashboard, profile, addCourse, registerCourse, courseList, searchCourseTemplate } from './../controllers'
-import { whiteboard, discussion, addCourseTemplate, registerCourseTemplate } from './../controllers/ajax'
+import { whiteboard, discussion, addCourseTemplate, registerCourseTemplate, comingSoon } from './../controllers/ajax'
 
 module.exports = function (app, passport) {
 
@@ -49,6 +49,7 @@ module.exports = function (app, passport) {
     })
 
     app.get('/whiteboard', whiteboard)
+    app.get('/qanda', comingSoon)
     app.get('/discussion', discussion)
     app.get('/course/add', addCourseTemplate)
     app.get('/course/search', searchCourseTemplate)

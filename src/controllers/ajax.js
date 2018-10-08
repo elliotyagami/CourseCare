@@ -16,6 +16,10 @@ export const addCourseTemplate = (req, res) => {
     }
 }
 
+export const comingSoon = (req, res) => {
+        res.render("xhr",{type: 'coming-soon', layout: 'empty.handlebars'})
+}
+
 export const registerCourseTemplate = (req, res) => {
     if (req.isAuthenticated() && req.user.role ==  "student") {
         // res.redirect(`/${req.user.type}/whiteboard`)

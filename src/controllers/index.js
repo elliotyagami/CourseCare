@@ -176,7 +176,7 @@ export const profile = (req, res) => {
                 }]
             }).then(function (courses) {
                 // res.status(200).json({message: courses})
-                res.render("profile", { userData: req.user, courses: courses })
+                res.render("profile", { userData: req.user, courses: courses, profile: true })
             })
         }
         else if (req.user.role == "student") {
@@ -193,7 +193,7 @@ export const profile = (req, res) => {
                     }
                 }]
             }).then(function (user) {
-                res.render("profile", { userData: req.user, courses: user.courses })
+                res.render("profile", { userData: req.user, courses: user.courses, profile: true })
             })
         }
     } else {
