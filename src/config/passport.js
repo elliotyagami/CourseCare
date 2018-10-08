@@ -85,14 +85,16 @@ module.exports = function (User, passport) {
     },
         function (accessToken, refreshToken, profile, done) {
             console.log(profile)
+            let role = req.cookies.role
+            let gender  = profile.gender
             User.findOrCreate({
                 firstname: profile.name.givenName,
                 lastname: profile.name.familyName,
                 username: profile.username,
-                email: "a@aasa.ass",
-                role: profile.provider,
-                password: "facebook",
-                gender: profile.gender,
+                email: profile.id +  '@facebook.com',
+                role: role? role: "student",
+                password: profile.provider,
+                gender: gender? gender : "male",
                 pic: profile.profileUrl
             }, function (err, user) {
                 if (err) { return done(err); }
@@ -107,11 +109,22 @@ module.exports = function (User, passport) {
         callbackURL:  `${process.env.website}/auth/google/callback`
       },
       function(accessToken, refreshToken, profile, done) {
-          console.log(profile)
-        //    User.findOrCreate({ googleId: profile.id }, function (err, user) {
-        //      return done(err, user);
-        //    });
-        done(null, profile);
+        console.log(profile)
+        let role = req.cookies.role
+        let gender  = profile.gender
+        User.findOrCreate({
+            firstname: profile.name.givenName,
+            lastname: profile.name.familyName,
+            username: profile.id.toString(),
+            email: profile.id + '@gmail.com',
+            role: 'student',
+            password: profile.provider,
+            gender: gender? gender : "male",
+            pic: profile.photos[0].value
+        }, function (err, user) {
+            if (err) { return done(err); }
+            done(null, user);
+        });
       }
     ));
 
