@@ -106,7 +106,7 @@ module.exports = function (User, passport) {
                 where: {
                     email: email
                 },
-                transaction: obj
+                defaults: obj
             }).spread(function (userResult, created) {
                 if (userResult) { return done(err); }
                 done(null, user);
@@ -123,7 +123,7 @@ module.exports = function (User, passport) {
         function (req, accessToken, refreshToken, profile, done) {
             console.log(profile)
             let role = req.cookies.role
-            console.log(role)
+            console.log(req.cookies)
             let gender = profile.gender
             let email = profile.emails[0].value
             email ? email : profile.id + '@gmail.com'
@@ -142,8 +142,9 @@ module.exports = function (User, passport) {
                 where: {
                     email: email
                 },
-                transaction: obj
+                defaults: obj
             }).spread(function (userResult, created) {
+                con
                 if (userResult) { return done(err); }
                 done(null, user);
             })
