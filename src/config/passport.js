@@ -3,7 +3,7 @@ import passportFacebook from 'passport-facebook'
 import Sequelize from 'sequelize'
 let Op = Sequelize.Op
 import models from './../models'
-import {getPicture} from './../helpers'
+import { getPicture } from './../helpers'
 import Mitter from '@mitter-io/node'
 import passportGoogle from 'passport-google-oauth'
 
@@ -88,23 +88,29 @@ module.exports = function (User, passport) {
         function (req, accessToken, refreshToken, profile, done) {
             console.log(profile)
             let role = req.cookies.role
-            let gender  = profile.gender
+            let gender = profile.gender
+            let email = profile.id + '@facebook.com'
             // let email = profile.emails[0].value
             let obj = {
                 firstname: profile.name.givenName,
                 lastname: profile.name.familyName,
                 username: profile.username,
-                email: profile.id +  '@facebook.com',
-                role: role? role: "student",
+                email: email,
+                role: role ? role : "student",
                 password: profile.provider,
-                gender: gender? gender : "male",
+                gender: gender ? gender : "male",
                 pic: getPicture(gender)
             }
             console.log(obj)
-            User.findOrCreate(obj, function (err, user) {
-                if (err) { return done(err); }
+            User.findOrCreate({
+                where: {
+                    email: email
+                },
+                transaction: obj
+            }).spread(function (userResult, created) {
+                if (userResult) { return done(err); }
                 done(null, user);
-            });
+            })
         }
     ));
 
@@ -112,30 +118,36 @@ module.exports = function (User, passport) {
         clientID: process.env.GOOGLE_CLIENT_ID,
         clientSecret: process.env.GOOGLE_CLIENT_SECRET,
         passReqToCallback: true,
-        callbackURL:  `${process.env.website}/auth/google/callback`
-      },
-      function(req, accessToken, refreshToken, profile, done) {
-        console.log(profile)
-        let role = req.cookies.role
-        let gender  = profile.gender
-        let email = profile.emails[0].value
-        email ? email : profile.id + '@gmail.com'
-        let obj = {
-            firstname: profile.name.givenName,
-            lastname: profile.name.familyName,
-            username: profile.id.toString(),
-            email: email,
-            role: 'student',
-            password: profile.provider,
-            gender: gender? gender : "male",
-            pic: profile.photos[0].value
+        callbackURL: `${process.env.website}/auth/google/callback`
+    },
+        function (req, accessToken, refreshToken, profile, done) {
+            console.log(profile)
+            let role = req.cookies.role
+            console.log(role)
+            let gender = profile.gender
+            let email = profile.emails[0].value
+            email ? email : profile.id + '@gmail.com'
+            let obj = {
+                firstname: profile.name.givenName,
+                lastname: profile.name.familyName,
+                username: profile.id.toString(),
+                email: email,
+                role: 'student',
+                password: profile.provider,
+                gender: gender ? gender : "male",
+                pic: profile.photos[0].value
+            }
+            console.log(obj)
+            User.findOrCreate({
+                where: {
+                    email: email
+                },
+                transaction: obj
+            }).spread(function (userResult, created) {
+                if (userResult) { return done(err); }
+                done(null, user);
+            })
         }
-        console.log(obj)
-        User.findOrCreate(obj, function (err, user) {
-            if (err) { return done(err); }
-            done(null, user);
-        });
-      }
     ));
 
     passport.use('local-login', new LocalStrategy(
