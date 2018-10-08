@@ -109,6 +109,8 @@ module.exports = function (User, passport) {
                 },
                 defaults: obj
             }).spread(function (userResult, created) {
+                console.log(userResult, created)
+                console.log("userResult, created")
                 if (!userResult) { return done(null); }
                 done(null, userResult);
             })
