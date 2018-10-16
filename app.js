@@ -118,7 +118,7 @@ function onConnection(socket){
 	socket.on('connectChat',(data)=> {
 		// channelClient.newChannel(data.receiver+ "#" + data.sender).then((data)=>{
 			console.log(data)
-		})
+		// })
 	})
   }
 
