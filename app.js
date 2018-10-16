@@ -8,6 +8,7 @@ import session from 'express-session'
 import ioCookieParser from 'socket.io-cookie-parser'
 import passport from 'passport'
 import models from './src/models'
+import {channelClient} from './src/config/mitter'
 // import routes from './src/routes'
 
 
@@ -114,6 +115,11 @@ let io = require("socket.io")(server, {})
 function onConnection(socket){
 	socket.on('drawing', (data) => socket.broadcast.emit('drawing', data));
 	socket.on('clear', (data) => socket.broadcast.emit('clear', data));
+	socket.on('connectChat',(data)=> {
+		// channelClient.newChannel(data.receiver+ "#" + data.sender).then((data)=>{
+			console.log(data)
+		})
+	})
   }
 
 io.on('connection', onConnection);

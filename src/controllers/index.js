@@ -23,7 +23,7 @@ let dashboardHandler = (rows, req, res) => {
     if (rows) {
         let obj = {
             id: {
-                [Op.ne]: req.params.id
+                [Op.ne]: req.user.id
             }
         };
         if (req.user.role == "tutor") {

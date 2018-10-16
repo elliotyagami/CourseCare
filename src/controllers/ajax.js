@@ -1,4 +1,4 @@
-export const whiteboard = (req, res) => {
+export const whiteboardTemplate = (req, res) => {
     if (req.isAuthenticated()) {
         // res.redirect(`/${req.user.type}/whiteboard`)
         res.render("xhr",{userData: req.user, type: 'whiteboard',layout: 'empty.handlebars'})

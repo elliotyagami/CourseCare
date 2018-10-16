@@ -25,6 +25,12 @@
 
   socket.on('drawing', onDrawingEvent);
 
+  window.connectChat = function (obj){
+    socket.emit('connectChat',obj)
+  }
+
+  socket.on('drawing', onDrawingEvent);
+
   window.addEventListener('resize', onResize, false);
   onResize();
 

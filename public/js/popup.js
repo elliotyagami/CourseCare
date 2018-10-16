@@ -82,6 +82,10 @@ function register_popup(id, name)
     chatBox.setAttribute('id', id);
     chatBox.innerHTML = element;
     document.getElementsByTagName("body")[0].appendChild(chatBox);
+    connectChat({
+        receiver: "user-" + id,
+        sender: "user-" + getCookie('UserId')
+    })
 
     popups.unshift(id);
 
