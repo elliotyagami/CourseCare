@@ -42,7 +42,7 @@ export const courseListTemplate = (req, res) => {
             attributes: ['title', 'description', 'createdAt', 'id', 'password'],
             wherer: [
                 {
-                    creatorId: req.user.role
+                    creatorId: req.user.id
                 }
             ],
             // order: ['createdAt DESC']
