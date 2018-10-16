@@ -13,11 +13,13 @@
   };
   var drawing = false;
 
-  clearButton.addEventListener('click', clearWhiteBoard, false);
-  canvas.addEventListener('mousedown', onMouseDown, false);
-  canvas.addEventListener('mouseup', onMouseUp, false);
-  canvas.addEventListener('mouseout', onMouseUp, false);
-  canvas.addEventListener('mousemove', throttle(onMouseMove, 10), false);
+  if (getCookie("role") == "tutor") {
+    clearButton.addEventListener('click', clearWhiteBoard, false);
+    canvas.addEventListener('mousedown', onMouseDown, false);
+    canvas.addEventListener('mouseup', onMouseUp, false);
+    canvas.addEventListener('mouseout', onMouseUp, false);
+    canvas.addEventListener('mousemove', throttle(onMouseMove, 10), false);
+  }
 
   for (var i = 0; i < colors.length; i++){
     colors[i].addEventListener('click', onColorUpdate, false);

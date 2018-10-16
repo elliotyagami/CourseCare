@@ -19,3 +19,26 @@ export const getPicture = (gender) => {
 	let ind = Math.floor(Math.random()*maleImg.length);
 	return '/images/avatar/'+maleImg[ind]
 }
+
+
+export const getCookie = function(name, doc =null) {
+	var getCookieValues = function(cookie) {
+		var cookieArray = cookie.split('=');
+		return cookieArray[1].trim();
+	};
+
+	var getCookieNames = function(cookie) {
+		var cookieArray = cookie.split('=');
+		return cookieArray[0].trim();
+	};
+
+	var cookies;
+	if (! doc){
+		cookies = document.cookie.split(';');
+	}else{
+		cookies = doc.split(';');
+	}
+	var cookieValue = cookies.map(getCookieValues)[cookies.map(getCookieNames).indexOf(name)];
+
+	return (cookieValue === undefined) ? null : cookieValue;
+};

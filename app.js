@@ -7,6 +7,7 @@ import exphbs from 'express-handlebars'
 import session from 'express-session'
 import ioCookieParser from 'socket.io-cookie-parser'
 import passport from 'passport'
+import {getCookie} from './src/helpers'
 import models from './src/models'
 import {channelClient} from './src/config/mitter'
 // import routes from './src/routes'
@@ -113,12 +114,35 @@ let server = app.listen(process.env.PORT || 3000, function () {
 let io = require("socket.io")(server, {})
 
 function onConnection(socket){
+
 	socket.on('drawing', (data) => socket.broadcast.emit('drawing', data));
 	socket.on('clear', (data) => socket.broadcast.emit('clear', data));
 	socket.on('connectChat',(data)=> {
-		// channelClient.newChannel(data.receiver+ "#" + data.sender).then((data)=>{
+		let userId = parseInt(getCookie("UserId",socket.handshake.headers.cookie))
+		let userId2 = parseInt(data.receiver)
+		let min = userId < userId2 ? userId : userId2;
+		let max = userId > userId2 ? userId : userId2;
+		console.log(userId)
+		let obj = {
+			"channelId": min+ "#" + max,
+			"defaultRuleSet": "io.mitter.ruleset.chats.DirectMessage",
+			"participation": [
+				{
+					"participant": "user-" + data.receiver,
+					"participationStatus": "Active"
+				},
+				{
+					"participant": userId,
+					"participationStatus": "Active"
+				}
+			],
+			"systemChannel": false
+		}
+		channelClient.newChannel(obj).then(data =>{
 			console.log(data)
-		// })
+		}).catch(err => {
+				console.log(err)
+			})
 	})
   }
 
