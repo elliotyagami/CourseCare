@@ -40,7 +40,7 @@ export const courseListTemplate = (req, res) => {
     if (req.isAuthenticated() && req.user.role == "tutor") {
         models.Course.findAll({
             attributes: ['title', 'description', 'createdAt', 'id', 'password'],
-            wherer: [
+            where: [
                 {
                     creatorId: req.user.id
                 }
