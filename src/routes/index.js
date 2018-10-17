@@ -9,6 +9,7 @@ import bcrypt from 'bcryptjs'
 import { index, registerUser, register, dashboard, profile } from './../controllers'
 import { whiteboardTemplate, discussion, comingSoon } from './../controllers/ajax'
 import { addCourseTemplate, registerCourseTemplate, searchCourseTemplate, courseListTemplate, addCourse, registerCourse } from '../controllers/course'
+import { postAdd } from './../controllers/post'
 
 module.exports = function (app, passport) {
 
@@ -60,6 +61,8 @@ module.exports = function (app, passport) {
 
     app.post('/course/register', registerCourse)
     app.post('/course/add', addCourse)
+
+    app.get('/post/add', postAdd)
 
     app.get('/:role/register', register)
     app.post('/:role/register', registerUser)

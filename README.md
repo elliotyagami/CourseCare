@@ -1,5 +1,26 @@
 #CourseCare
 
+Application is live at https://coursecare.ml
+
+For testing you can create an account or use the provided credentials --
+
+For tutor --
+ranita@gmail.com 
+username - ranita
+password - 1234567890
+
+For student --
+Student 1
+harsh@gmail.com
+username - harshjn
+password - 1234567890
+
+Student 2
+ssubrat@gmail.com
+username - ssubrat
+password - 1234567890
+
+
 ## Inspiration
 
 Recently my college has started using online platforms like techtud.com for some courses. It is platform where students can post their query and get answers from the instructor.  Or the instructor can post some article or course related material whenever they want. But it is more or less a discussion forum. 

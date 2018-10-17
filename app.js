@@ -114,35 +114,47 @@ let server = app.listen(process.env.PORT || 3000, function () {
 let io = require("socket.io")(server, {})
 
 function onConnection(socket){
+	let cookies = socket.handshake.headers.cookie
+	let room = "course#" + parseInt(getCookie("CourseId", cookies))
+	let userId = parseInt(getCookie("UserId", cookies))
 
-	socket.on('drawing', (data) => socket.broadcast.emit('drawing', data));
-	socket.on('clear', (data) => socket.broadcast.emit('clear', data));
+
+	socket.on('drawing', (data) => io.sockets.in(room).emit('drawing', data));
+	socket.on('clear', (data) => io.sockets.in(room).emit('clear', data));
 	socket.on('connectChat',(data)=> {
-		let userId = parseInt(getCookie("UserId",socket.handshake.headers.cookie))
+
 		let userId2 = parseInt(data.receiver)
 		let min = userId < userId2 ? userId : userId2;
 		let max = userId > userId2 ? userId : userId2;
-		console.log(userId)
+
+		min = `user-${min}`
+		max = `user-${max}`
+		let channelId=`${min}@-@${max}`
 		let obj = {
-			"channelId": min+ "#" + max,
+			"channelId": channelId,
 			"defaultRuleSet": "io.mitter.ruleset.chats.DirectMessage",
 			"participation": [
 				{
-					"participant": "user-" + data.receiver,
+					"participantId": min,
 					"participationStatus": "Active"
 				},
 				{
-					"participant": userId,
+					"participantId":  max,
 					"participationStatus": "Active"
 				}
-			],
-			"systemChannel": false
+			]
 		}
-		channelClient.newChannel(obj).then(data =>{
-			console.log(data)
+		channelClient.getChannel(channelId).then(channelExist => {
+			console.log(channelExist)
 		}).catch(err => {
-				console.log(err)
-			})
+			console.log(err)
+					channelClient.newChannel(obj).then(data =>{
+						socket.emit('createdRoom',data)
+					}).catch(err => {
+							console.log(err)
+					})
+		})
+
 	})
   }
 

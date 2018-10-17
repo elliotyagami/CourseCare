@@ -1,0 +1,11 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js"></script>
+<script>
+    const instance = axios.create({
+  baseURL: 'https://api.mitter.io/',
+  timeout: 1000,
+  headers: {'X-Issued-Mitter-User-Authorization': 'eyJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJtaXR0ZXItaW8iLCJ1c2VyVG9rZW5JZCI6InVwb0J6VkZwblpxdEhRTTgiLCJ1c2VydG9rZW4iOiJidTdiZm5iZ3VlcHM4cjNkZ2lxbml1YTEzOSIsImFwcGxpY2F0aW9uSWQiOiJPTms2aC15c3hpNi1mQWpWQy1BZ0FHZSIsInVzZXJJZCI6InVzZXItMSJ9.A_Zm5_7JjoFxyvjfqHGgTHPDBHCzxUkJjFA1_nTpwm6th2DbCdcGQf7LwAk5dnB8zYpoxIpRysAfrWhlFoOnrA'}
+});
+axios.post('https://api.mitter.io/v1/users/me',{}).then(function(data){
+    console.log(data)
+})
+</script>

@@ -1,2 +1,30 @@
+<form class="ui reply form" style="max-width: 600px" id="submitPost">
+    <h3 class="ui header">Post your query</h3>
+    <div class="field">
+        <label>Title</label>
+        <input placeholder="eg. permutation and combination" type="text" name="postTitle">
+    </div>
+    <div class="field">
+        <textarea name="postArea"></textarea>
+    </div>
+    <button class="ui blue labeled submit icon button">
+        <i class="icon edit"></i> Post
+    </button>
+</form>
+<script>
+    $('#submitPost').submit(function (e) {
+        e.preventDefault()
 
-{{> reply}}
+        let reqObj = {}
+        $(this).find('input').each(function (ind, item) {
+            reqObj[$(item).attr('name')] = $(item).val()
+        })
+        $(this).find('textarea').each(function (ind, item) {
+            reqObj[$(item).attr('name')] = $(item).val()
+        })
+        $.post("/post/add", reqobj,function(data){
+            console.log(data)
+        })
+
+    })
+</script>

@@ -1,5 +1,4 @@
 var web = require('@mitter-io/web');
-var core = require('@mitter-io/core');
 var getCookie = function(name) {
 	var getCookieValues = function(cookie) {
 		var cookieArray = cookie.split('=');
