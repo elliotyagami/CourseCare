@@ -9,7 +9,7 @@
         <i class="ellipsis vertical icon"></i>
         Dashboard
     </a> --}}
-    {{#ifeq "student" role}}
+    {{#ifeq "student" userData.role}}
     <a class="item" onclick="navigate('/course/search')">
         <i class="search icon"></i>
         Search courses
@@ -20,7 +20,7 @@
     </a>
     {{/ifeq}}
     <a class="item">
-        <span onclick="navigate('/course/list')">Courses</span> {{#ifeq role "tutor"}}
+        <span onclick="navigate('/course/list')">Courses</span> {{#ifeq userData.role "tutor"}}
         <button class="ui right floated primary mini button" onclick="navigate('/course/add')">
             Add
         </button>
@@ -29,7 +29,7 @@
         {{/ifeq}}
         <div class="menu">
             {{#each courses}}
-            <a class="item" value="{{this.courseId}}" href="/{{../role}}/dashboard/{{this.id}}">
+            <a class="item" value="{{this.courseId}}" href="/{{../userData.role}}/dashboard/{{this.id}}">
                 {{this.title}}
                 <i class="arrow alternate circle right icon"></i>
             </a>
@@ -37,7 +37,7 @@
             {{/each}}
         </div>
     </a>
-    {{#ifeq "tutor" role}}
+    {{#ifeq "tutor" userData.role}}
         <a class="item" onclick="navigate('/course/list')">
         <i class="list icon"></i>
         See passwords

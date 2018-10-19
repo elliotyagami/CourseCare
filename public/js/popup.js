@@ -73,19 +73,48 @@ function register_popup(id, name)
         }
     }
 
-    var element = '<div class="popup-box chat-popup" id="'+ id +'">';
-    element = element + '<div class="popup-head">';
+    var element = '<div class="popup-head">';
     element = element + '<div class="popup-head-left">'+ name +'</div>';
     element = element + '<div class="popup-head-right"><a href="javascript:close_popup(\''+ id +'\');">&#10005;</a></div>';
-    element = element + '<div style="clear: both"></div></div><div class="popup-messages"></div></div>';
-
-    document.getElementsByTagName("body")[0].innerHTML = document.getElementsByTagName("body")[0].innerHTML + element;
+    element = element + '<div style="clear: both"></div></div><div class="popup-messages" id="user-' +id+'"></div><div class="reply"><input type="text"><button style="right:float" onclick="broker('+id+')">send</button></div>';
+    let chatBox = document.createElement("div");
+    chatBox.setAttribute('class', 'popup-box chat-popup');
+    chatBox.setAttribute('id', id);
+    chatBox.innerHTML = element;
+    document.getElementsByTagName("body")[0].appendChild(chatBox);
 
     popups.unshift(id);
 
     calculate_popups();
 
 }
+
+function broker(id){
+    console.log("#user-"+id+" + button")
+   let message =  document.querySelector("#user-"+id+" + div>input").value;
+   document.querySelector("#user-"+id+" + div>input").value = "";
+   messenger("send",message,id)
+}
+{/* <ul class="chat">
+ <li class="chat__bubble chat__bubble--rcvd chat__bubble--stop">What are you up to?</li>
+ <li class="chat__bubble chat__bubble--sent">Not much.</li>
+ <li class="chat__bubble chat__bubble--sent">Just writing some CSS.</li>
+ <li class="chat__bubble chat__bubble--sent">I just LOVE writing CSS.</li>
+ <li class="chat__bubble chat__bubble--sent chat__bubble--stop">Do you?</li>
+ <li class="chat__bubble chat__bubble--rcvd">Yeah!</li>
+ <li class="chat__bubble chat__bubble--rcvd">It's super fun.</li>
+ <li class="chat__bubble chat__bubble--rcvd chat__bubble--stop">... SUPER fun.</li>
+</ul> */}
+function messenger(type,message,receiver){
+    let ele = document.createElement('li');
+    if (type == "received")
+    ele.setAttribute('class', 'chat__bubble chat__bubble--rcvd')
+    else
+    ele.setAttribute('class', 'chat__bubble chat__bubble--sent')
+    ele.innerHTML = message;
+    document.getElementById('user-'+receiver).appendChild(ele);
+}
+
 
 //calculate the total number of popups suitable and then populate the toatal_popups variable.
 function calculate_popups()

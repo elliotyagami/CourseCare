@@ -18,7 +18,7 @@ export const searchCourseTemplate = (req, res) => {
             }]
         }).then(function (courses) {
             // res.redirect(`/${req.user.type}/whiteboard`)
-            res.render("xhr", { role: req.user.role, type: 'search-course', courses: courses, layout: 'empty.handlebars' })
+            res.render("xhr", { userData: req.user, type: 'search-course', courses: courses, layout: 'empty.handlebars' })
         })
     } else {
         res.render("")
@@ -29,7 +29,7 @@ export const index = (req, res) => {
         res.redirect(`/${req.user.role}/profile`)
 
     } else {
-        res.render("/student/register")
+        res.render("index")
     }
 }
 export const courseList = (req, res) => {
@@ -43,7 +43,7 @@ export const courseList = (req, res) => {
             ],
             // order: ['createdAt DESC']
         }).then(function (courses) {
-            res.render("xhr", { role: req.user.role, type: 'course-list', courseList: courses, layout: 'empty.handlebars' })
+            res.render("xhr", { userData: req.user, type: 'course-list', courseList: courses, layout: 'empty.handlebars' })
         })
     } else {
         res.render("")
@@ -60,20 +60,32 @@ let dashboardHandler = (rows,req,res) => {
         if (req.user.role == "tutor"){
             obj = {};
         }
+        Sequelize.Promise.all([
         models.Course.find({
             where: [{
                 id: req.params.id
                 }],
                 include: [{
                     model: models.User, as: 'students',
-                    attributes: ['username', 'pic', 'firstname' , 'lastname', ['id', 'userid']],
+                    attributes: ['username', 'pic', 'firstname' , 'lastname', 'id'],
                     where: obj
                 }]
-            }).then(function(c){
-                c = c ? c : {'students': []}
+            }),
+        models.Course.find({
+            where: [{
+                id: req.params.id
+                }],
+            include: [{
+                model: models.User, as: 'creator',
+                attribute:  ['username', 'pic', 'firstname' , 'lastname', 'id']
+            }]
+        })
+    ]).spread(function(c,t){
+                console.log(c)
+                c = c ? c : {'students': [], 'creator': {}}
                 res.cookie('CourseId', req.params.id)
-                res.cookie('TutorId', 2)
-                res.render('dashboard', { role: req.user.role, courseId: req.params.id, students: c.students })
+                res.cookie('TutorId', t.creator.id)
+                res.render('dashboard', { userData: req.user, course: c.title, students: c.students , tutor: t.creator})
             })
         }else{
             res.status(401).json({'message': 'access denied'})
@@ -101,7 +113,7 @@ export const dashboard = (req, res) => {
                 ]
             }).then((rows) =>dashboardHandler(rows,req,res))
         }else{
-            res.render('dashboard', { role: req.params.role })
+            res.render('dashboard', { userData: {role: req.params.role} })
         }
     } else {
         res.redirect(`/${req.params.role}/register`)
@@ -122,7 +134,7 @@ export const registerCourse = (req, res) => {
                     CourseId: parseInt(req.body.id),
                     UserId: req.user.id
                 }).then(function (registered) {
-                        res.redirect("/user/profile")
+                        res.redirect("/student/profile")
                     })
             }else {
                 res.status(401).json({ message: "authorization failed" })
@@ -148,7 +160,7 @@ export const register = (req, res) => {
     if (req.isAuthenticated()) {
         res.redirect(`/${req.user.role}/profile`)
     } else {
-        res.render('register', { role: req.params.role })
+        res.render('register', { userData: {role: req.params.role} })
     }
 }
 
@@ -163,7 +175,7 @@ export const profile = (req, res) => {
                 }]
             }).then(function (courses) {
                 // res.status(200).json({message: courses})
-                res.render("profile", { role: req.user.role, courses: courses })
+                res.render("profile", { userData: req.user, courses: courses })
             })
         }
         else if (req.user.role == "student") {
@@ -180,7 +192,7 @@ export const profile = (req, res) => {
                     }
                 }]
             }).then(function (user) {
-                res.render("profile", { role: req.user.role, courses: user.courses })
+                res.render("profile", { userData: req.user, courses: user.courses })
             })
         }
     } else {
@@ -225,6 +237,13 @@ export const registerUser = (req, res) => {
         } else {
             let hash = createHashedPassword(req.body.password);
 
+            let maleImg = ['elliot.jpg', 'matthew.png', 'steve.jpg']
+            let femaleImg = ['jenny.jpg', 'lindsay.png', 'rachel.jpg', 'veronika.jpg']
+            if (req.body.gender == 'female'){
+                maleImg = femaleImg;
+            }
+            let ind = Math.floor(Math.random()*maleImg.length);
+
             let trimedObject = {
                 firstname: req.body.firstname.trim(),
                 lastname: req.body.lastname.trim(),
@@ -233,7 +252,7 @@ export const registerUser = (req, res) => {
                 role: req.params.role,
                 password: hash,
                 gender: req.body.gender,
-                pic: '/images/avatar/matthew.png'
+                pic: '/images/avatar/'+maleImg[ind]
             }
 
             if (req.body.password == req.body.passwordCon) {
@@ -246,7 +265,7 @@ export const registerUser = (req, res) => {
             models.User.create(trimedObject).then(function (newUser, created) {
                 if (newUser) {
                     // res.status(201).json({ message: 'User created' })
-                    res.render('register', { role: req.params.role })
+                    res.render('register', { userData: {role: req.params.role} })
                 } else {
                     res.status(500).json({ message: 'Server error' })
                 }

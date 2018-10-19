@@ -1,7 +1,7 @@
 export const whiteboard = (req, res) => {
     if (req.isAuthenticated()) {
         // res.redirect(`/${req.user.type}/whiteboard`)
-        res.render("xhr",{role: req.user.role, type: 'whiteboard',layout: 'empty.handlebars'})
+        res.render("xhr",{userData: req.user, type: 'whiteboard',layout: 'empty.handlebars'})
     } else {
         res.render("")
     }
@@ -10,7 +10,7 @@ export const whiteboard = (req, res) => {
 export const addCourseTemplate = (req, res) => {
     if (req.isAuthenticated() && req.user.role ==  "tutor") {
         // res.redirect(`/${req.user.type}/whiteboard`)
-        res.render("xhr",{role: req.user.role, type: 'add-course', layout: 'empty.handlebars'})
+        res.render("xhr",{userData: req.user, type: 'add-course', layout: 'empty.handlebars'})
     } else {
         res.render("")
     }
@@ -19,7 +19,7 @@ export const addCourseTemplate = (req, res) => {
 export const registerCourseTemplate = (req, res) => {
     if (req.isAuthenticated() && req.user.role ==  "student") {
         // res.redirect(`/${req.user.type}/whiteboard`)
-        res.render("xhr",{role: req.user.role, type: 'register-course', layout: 'empty.handlebars', courseId: req.params.id})
+        res.render("xhr",{userData: req.user, type: 'register-course', layout: 'empty.handlebars', courseId: req.params.id})
     } else {
         res.render("")
     }

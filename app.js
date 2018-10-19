@@ -60,7 +60,7 @@ app.engine('handlebars', exphbs({
 	// 	resave: true
 	// }))
 
-// app.use(cookieParser(process.env.SECRET))
+app.use(cookieParser())
 var SequelizeStore = require('connect-session-sequelize')(session.Store);
 
 
