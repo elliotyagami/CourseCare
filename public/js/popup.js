@@ -86,8 +86,14 @@ function register_popup(id, name)
     chatBox.setAttribute('id', id);
     chatBox.innerHTML = element;
     document.getElementsByTagName("body")[0].appendChild(chatBox);
-    let obj = getChannelId(id)
-    mitter.getChannelMessages(obj,id)
+
+    // fetch previous messages
+    if(document.getElementById("user-"+ id).childNodes.length == 0){
+        console.log("previous messages stream length")
+        let obj = getChannelId(id)
+        mitter.getChannelMessages(obj,id)
+    }
+
     connectChat({
         receiver:  parseInt(id)
     })
