@@ -9,3 +9,13 @@ export const createHashedPassword = (password) => {
 	let hash = bcrypt.hashSync(password, salt);
 	return hash
 }
+
+function getPicture(gender){
+	let maleImg = ['elliot.jpg', 'matthew.png', 'steve.jpg']
+	let femaleImg = ['jenny.jpg', 'lindsay.png', 'rachel.jpg', 'veronika.jpg']
+	if (gender == 'female'){
+		maleImg = femaleImg;
+	}
+	let ind = Math.floor(Math.random()*maleImg.length);
+	return '/images/avatar/'+maleImg[ind]
+}

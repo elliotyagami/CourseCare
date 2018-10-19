@@ -16,12 +16,13 @@ module.exports = function (app, passport) {
 
     // facebook oauth
 
-    app.get('/auth/facebook', passport.authenticate('facebook', {scope: ['picture', 'first_name', 'last_name', 'email']}))
+    app.get('/auth/facebook', passport.authenticate('facebook', {scope: ['public_profile', 'email']}))
 
     app.get('/auth/google', passport.authenticate('google', { scope: ['https://www.googleapis.com/auth/plus.login', 'email'] }))
 
     app.get('/auth/google/callback', function (req, res, next) {
         passport.authenticate('google', function (err, user, info) {
+            console.log("callack google")
             if (!user) { res.redirect(`/${req.cookies.role}/register`); }
             if (user)
                 // req.logIn(user, function (err) {
@@ -36,6 +37,7 @@ module.exports = function (app, passport) {
 
     app.get('/auth/facebook/callback', function (req, res, next) {
         passport.authenticate('facebook', function (err, user, info) {
+            console.log("callack facebook")
             if (!user) { res.redirect(`/${req.cookies.role}/register`); }
             if (user)
                 // req.logIn(user, function (err) {

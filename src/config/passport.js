@@ -3,6 +3,7 @@ import passportFacebook from 'passport-facebook'
 import Sequelize from 'sequelize'
 let Op = Sequelize.Op
 import models from './../models'
+import { getPicture } from './../helpers'
 import Mitter from '@mitter-io/node'
 import passportGoogle from 'passport-google-oauth'
 
@@ -81,51 +82,72 @@ module.exports = function (User, passport) {
     passport.use(new FacebookStrategy({
         clientID: process.env.facebook_api_key,
         clientSecret: process.env.facebook_api_secret,
+        passReqToCallback: true,
         callbackURL: `${process.env.website}/auth/facebook/callback`
     },
-        function (accessToken, refreshToken, profile, done) {
+        function (req, accessToken, refreshToken, profile, done) {
             console.log(profile)
             let role = req.cookies.role
-            let gender  = profile.gender
-            User.findOrCreate({
+            let gender = profile.gender
+            let email = profile.id + '@facebook.com'
+            // let email = profile.emails[0].value
+            let obj = {
                 firstname: profile.name.givenName,
                 lastname: profile.name.familyName,
                 username: profile.username,
-                email: profile.id +  '@facebook.com',
-                role: role? role: "student",
+                email: email,
+                role: role ? role : "student",
                 password: profile.provider,
-                gender: gender? gender : "male",
-                pic: profile.profileUrl
-            }, function (err, user) {
-                if (err) { return done(err); }
-                done(null, user);
-            });
+                gender: gender ? gender : "male",
+                pic: getPicture(gender)
+            }
+            console.log(obj)
+            User.findOrCreate({
+                where: {
+                    email: email
+                },
+                defaults: obj
+            }).spread(function (userResult, created) {
+                if (!userResult) { return done(null); }
+                done(null, userResult);
+            })
         }
     ));
 
     passport.use(new GoogleStrategy({
         clientID: process.env.GOOGLE_CLIENT_ID,
         clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-        callbackURL:  `${process.env.website}/auth/google/callback`
-      },
-      function(accessToken, refreshToken, profile, done) {
-        console.log(profile)
-        let role = req.cookies.role
-        let gender  = profile.gender
-        User.findOrCreate({
-            firstname: profile.name.givenName,
-            lastname: profile.name.familyName,
-            username: profile.id.toString(),
-            email: profile.id + '@gmail.com',
-            role: 'student',
-            password: profile.provider,
-            gender: gender? gender : "male",
-            pic: profile.photos[0].value
-        }, function (err, user) {
-            if (err) { return done(err); }
-            done(null, user);
-        });
-      }
+        passReqToCallback: true,
+        callbackURL: `${process.env.website}/auth/google/callback`
+    },
+        function (req, accessToken, refreshToken, profile, done) {
+            console.log(profile)
+            let role = req.cookies.role
+            console.log(req.cookies)
+            let gender = profile.gender
+            let email = profile.emails[0].value
+            email ? email : profile.id + '@gmail.com'
+            let obj = {
+                firstname: profile.name.givenName,
+                lastname: profile.name.familyName,
+                username: profile.id.toString(),
+                email: email,
+                role: 'student',
+                password: profile.provider,
+                gender: gender ? gender : "male",
+                pic: profile.photos[0].value
+            }
+            console.log(obj)
+            User.findOrCreate({
+                where: {
+                    email: email
+                },
+                defaults: obj
+            }).spread(function (userResult, created) {
+                if (!userResult) { return done(null); }
+                done(null, userResult);
+            })
+        }
     ));
 
     passport.use('local-login', new LocalStrategy(

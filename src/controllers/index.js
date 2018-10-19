@@ -1,7 +1,7 @@
 import models from './../models'
 import Sequelize from 'sequelize'
 let Op = Sequelize.Op
-import { createHashedPassword } from './../helpers'
+import { createHashedPassword, getPicture } from './../helpers'
 
 
 const randomString = () => {
@@ -237,12 +237,7 @@ export const registerUser = (req, res) => {
         } else {
             let hash = createHashedPassword(req.body.password);
 
-            let maleImg = ['elliot.jpg', 'matthew.png', 'steve.jpg']
-            let femaleImg = ['jenny.jpg', 'lindsay.png', 'rachel.jpg', 'veronika.jpg']
-            if (req.body.gender == 'female'){
-                maleImg = femaleImg;
-            }
-            let ind = Math.floor(Math.random()*maleImg.length);
+
 
             let trimedObject = {
                 firstname: req.body.firstname.trim(),
@@ -252,7 +247,7 @@ export const registerUser = (req, res) => {
                 role: req.params.role,
                 password: hash,
                 gender: req.body.gender,
-                pic: '/images/avatar/'+maleImg[ind]
+                pic: getPicture(req.body.gender)
             }
 
             if (req.body.password == req.body.passwordCon) {
