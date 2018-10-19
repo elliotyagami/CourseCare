@@ -5,7 +5,7 @@
   var socket = io();
   var canvas = document.getElementById('whiteboard');
   var clearButton = document.getElementById('clearbutton');
-  var colors = document.getElementsByClassName('color');
+  var colors = document.getElementsByClassName('ui color button');
   var context = canvas.getContext('2d');
 
   var current = {
@@ -78,7 +78,7 @@
   }
 
   function onColorUpdate(e){
-    current.color = e.target.className.split(' ')[1];
+    current.color = e.target.className.split(' ')[2];
   }
 
   // limit the number of events per second

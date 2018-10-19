@@ -1,7 +1,7 @@
 <div class="ui visible left thin vertical sidebar menu" id="course-side-bar">
     <a class="item height-same">
     </a>
-    <a class="active item" value="home">
+    <a class="active item" value="home" href="/{{role}}/profile">
         <i class="home icon"></i>
         Home
     </a>
@@ -29,7 +29,6 @@
         let url = $(this).attr('value');
         $('#loader').removeClass('disabled').addClass('active')
         $.get( "/" + url, function( data ) {
-            console.log(data)
             $('#loader').addClass('disabled').removeClass('active')
             $( ".main-screen" ).html(data);
         });

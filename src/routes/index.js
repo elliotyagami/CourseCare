@@ -3,24 +3,32 @@
 
 // let router = express.Router();
 
-import student from './students'
-import tutor from './tutors'
 import bcrypt from 'bcryptjs'
-import { registerUser, register, dashboard, whiteboard, discussion} from './../controllers'
+// import tutor from './tutor'
+// import student from './student'
+import { index, registerUser, register, dashboard, profile, addCourse, registerCourse, courseList, searchCourseTemplate} from './../controllers'
+import { whiteboard, discussion, addCourseTemplate,registerCourseTemplate} from './../controllers/ajax'
 
 module.exports =  function (app, passport) {
 
-    app.get('/', (req, res) => {
-        res.status(200).json({ "status": "running" });
-    })
-
-    app.get('/:role/register', register)
-    app.post('/:role/register', registerUser)
-
-    app.get('/:role/dashboard', dashboard)
+    app.get('/', index)
 
     app.get('/whiteboard', whiteboard)
     app.get('/discussion', discussion)
+    app.get('/course/add', addCourseTemplate)
+    app.get('/course/search', searchCourseTemplate)
+    app.get('/course/register', registerCourseTemplate)
+    app.get('/course/register/:id', registerCourseTemplate)
+
+    app.post('/course/register', registerCourse)
+    app.post('/course/add', addCourse)
+    app.get('/course/list', courseList)
+
+    app.get('/:role/register', register)
+    app.post('/:role/register', registerUser)
+    app.get('/:role/dashboard', dashboard)
+    app.get('/:role/profile', profile)
+    app.get('/:role/dashboard/:id', dashboard)
 
     app.post('/:role/login', function (req, res, next) {
 
@@ -28,20 +36,22 @@ module.exports =  function (app, passport) {
             if (!user) { res.redirect(`/${req.params.role}/register`); }
             if (user)
             req.logIn(user, function(err) {
-                res.redirect(`/${req.user.role}/dashboard`);
+                res.cookie('UserId', req.user.id)
+                res.redirect(`/${req.user.role}/profile`);
             })
         })(req, res, next)
     })
 
 
-    app.get('/tutor', tutor)
-
-    app.get('/student', student)
+    // app.use('/tutor', tutor)
+    // app.use('/student', student)
 
     app.get('/logout', function (req, res) {
+        let role = req.user.role;
+        role = role ? role : 'student';
         req.logout();
         // req.flash('success_msg', 'You are logged out');
-        res.redirect('/student/signin');
+        res.redirect(`/${role}/register`);
     });
 
 }

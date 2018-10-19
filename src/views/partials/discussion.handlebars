@@ -3,11 +3,7 @@
 {{#each posts}}
 {{#with this}}
 {{> post authorpic=authorpic authorname=authorname title=title time=time description=description likecount=likecount }}
-<div class="ui comments">
-  <h3 class="ui dividing header">Comments</h3>
-{{> comment comments }}
-{{> reply}}
-</div>
+{{> comment-box comments=comments}}
 {{/with}}
 {{/each}}
 </div>

@@ -1,0 +1,54 @@
+{{#each courseList}}
+<div class="ui card">
+    <div class="content">
+        <span class="right floated ago" value="{{createdAt}}"></span>
+        <div class="header capitalize">{{title}}</div>
+    </div>
+    <div class="content">
+        <h4 class="ui sub header">Details</h4>
+        <div class="ui small feed">
+
+            <div class="event">
+                <div class="content">
+                    <div class="summary">
+                        id:
+                        <a>{{id}}</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="event">
+                <div class="content">
+                    <div class="summary">
+                        password:
+                        <a>{{password}}</a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="extra content">
+        <div class="event">
+            <div class="content">
+                <div class="summary">
+                    Description:
+                    <a>{{description}}</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{{/each}}
+<script>
+    $(document).ready(function(){
+        $('.ago').each(function (){
+            let a = daysAgo($(this).attr('value'));
+            $(this).html(a);
+        })
+    })
+    function daysAgo(utcString){
+ return Math.floor((Date.now() -Date.parse(utcString))/(24*3600*1000)) + ' days ago';
+    }
+</script>
+

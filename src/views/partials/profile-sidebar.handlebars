@@ -1,0 +1,55 @@
+<div class="ui visible left  vertical sidebar menu">
+    <a class="item height-same">
+    </a>
+    {{!-- <a class="item">
+        <i class="user icon"></i>
+        Profile
+    </a> --}}
+    {{!-- <a class="item" href="/{{role}}/dashboard">
+        <i class="ellipsis vertical icon"></i>
+        Dashboard
+    </a> --}}
+    {{#ifeq "student" role}}
+    <a class="item" onclick="navigate('/course/search')">
+        <i class="search icon"></i>
+        Search courses
+    </a>
+    <a class="item" onclick="navigate('/course/register')">
+        <i class="clipboard list icon"></i>
+        Register for course
+    </a>
+    {{/ifeq}}
+    <a class="item">
+        <span onclick="navigate('/course/list')">Courses</span> {{#ifeq role "tutor"}}
+        <button class="ui right floated primary mini button" onclick="navigate('/course/add')">
+            Add
+        </button>
+        {{else}}
+        <i class="list icon"></i>
+        {{/ifeq}}
+        <div class="menu">
+            {{#each courses}}
+            <a class="item" value="{{this.courseId}}" href="/{{../role}}/dashboard/{{this.id}}">
+                {{this.title}}
+                <i class="arrow alternate circle right icon"></i>
+            </a>
+            {{!-- {{/with}} --}}
+            {{/each}}
+        </div>
+    </a>
+    {{#ifeq "tutor" role}}
+        <a class="item" onclick="navigate('/course/list')">
+        <i class="list icon"></i>
+        See passwords
+    </a>
+    {{/ifeq}}
+</div>
+<script>
+    function navigate(path) {
+        $('#loader').removeClass('disabled').addClass('active')
+        $.get(path, function (data) {
+            $('#loader').addClass('disabled').removeClass('active')
+            $(".main-screen").html(data);
+        });
+    }
+</script>

@@ -1,8 +1,8 @@
 export default function(sequelize, Sequelize) {
 
-    var Course = sequelize.define('course', {
+    var Course = sequelize.define('Course', {
 
-        course_id: {
+        id: {
             autoIncrement: true,
             primaryKey: true,
             type: Sequelize.INTEGER
@@ -13,16 +13,25 @@ export default function(sequelize, Sequelize) {
             notEmpty: true
         },
 
+        password: {
+            type: Sequelize.STRING,
+            notEmpty: true
+        },
+
         description: {
             type: Sequelize.TEXT,
             notEmpty: false
-        },
-
-        tutor_id: {
-            type: Sequelize.INTEGER,
-            notEmpty: true
         }
     });
+
+    Course.associate = function (models) {
+        console.log(models)
+        Course.belongsTo(models.User, {
+          as: 'creator'
+        });
+        Course.belongsToMany(models.User,  {through: 'CourseRegister',  as: 'students'});
+        // console.log(Course.prototype)
+      };
 
     return Course;
 }

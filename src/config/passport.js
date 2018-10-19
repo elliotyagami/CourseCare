@@ -1,11 +1,12 @@
 import passportLocal from 'passport-local'
-
+import Sequelize from 'sequelize'
+let Op = Sequelize.Op
 
 module.exports =  function (User, passport) {
     let LocalStrategy = passportLocal.Strategy;
 
     passport.serializeUser(function (user, done) {
-        console.log('bb')
+        console.log('searialUser')
         let data = {
             id: user.id,
             role: user.role,
@@ -15,7 +16,7 @@ module.exports =  function (User, passport) {
 
     passport.deserializeUser(function (key, done) {
         User.findById(key.id).then(function (user) {
-            console.log('aa')
+            console.log('desearialUser')
             if (user) {
                 done(null, user.get());
             } else {
@@ -33,7 +34,7 @@ module.exports =  function (User, passport) {
         function (req, username, password, done) {
             User.findOne({
                 where: {
-                    $or: [
+                    [Op.or]: [
                         { username: username },
                         { email: username }
                     ]

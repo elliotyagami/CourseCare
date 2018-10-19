@@ -1,0 +1,51 @@
+<h3 class="ui header">Whiteboard</h3>
+<canvas class="whiteboard" id="whiteboard"></canvas>
+
+{{#ifeq role "student"}}
+<div id="agora_tutor" style="float:right;width:210px;height:147px;display:inline-block;"></div>
+{{/ifeq}}
+
+<div id="agora_local" style="float:right;width:210px;height:147px;display:inline-block;"></div>
+
+<div class="basic segment">
+    {{#ifeq role "tutor"}}
+    <button class="ui color black button"></button>
+    <button class="ui color red button"></button>
+    <button class="ui color green button"></button>
+    <button class="ui color blue button"></button>
+    <button class="ui color yellow button">
+        <button class="ui button" id="clearbutton">
+            Clear
+        </button>
+        <div class="ui buttons">
+            <button class="ui positive button" onclick="join()">Broadcast</button>
+            <div class="or"></div>
+            <button class="ui button" onclick="leave()">Leave</button>
+        </div>
+        {{else}}
+        <div class="ui buttons">
+            <button class="ui positive button" onclick="join()">Join</button>
+            <div class="or"></div>
+            <button class="ui button" onclick="leave()">Leave</button>
+        </div>
+        {{/ifeq}}
+
+        <div class="ui buttons">
+            <button class="ui positive button" onclick="publish()">
+                Publish
+            </button>
+            <button class="ui button" onclick="unpublish()">
+                Unpublish
+            </button>
+        </div>
+</div>
+{{#ifeq "tutor" role}}
+<script src="/js/whiteboard.js"></script> {{else}}
+<script src="/js/whiteboard-client.js"></script> {{/ifeq}}
+
+<div class="other-views">
+</div>
+
+{{#ifeq "tutor" role}}
+<script src="/js/agora-streaming.js"></script> {{else}}
+<script src="/js/agora-listener-only.js"></script> {{/ifeq}}

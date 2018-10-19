@@ -1,0 +1,20 @@
+<div class="ui cards">
+    {{#each courses}} {{#with this}}
+    <div class="card">
+        <div class="content">
+            <img class="right floated mini ui image" src="{{creator.pic}}">
+            <div class="header">{{title}}</div>
+             <div class="meta">
+        By: {{creator.username}}
+              </div>
+            <div class="description">
+                {{description}}
+            </div>
+        </div>
+        <div class="ui bottom attached button" onclick="navigate('/course/register/' + {{id}})">
+            <i class="add icon"></i>
+            Register
+        </div>
+    </div>
+    {{/with}} {{/each}}
+</div>
