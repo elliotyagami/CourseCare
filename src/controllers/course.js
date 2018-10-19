@@ -1,4 +1,5 @@
 import models from './../models'
+import { randomString } from './../helpers'
 
 export const addCourseTemplate = (req, res) => {
     if (req.isAuthenticated() && req.user.role ==  "tutor") {
