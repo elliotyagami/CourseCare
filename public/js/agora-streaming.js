@@ -79,10 +79,10 @@ function join() {
         if (stream.getId() == parseInt(getCookie("TutorId")) ) {
           stream.play('agora_tutor');
         } else {
-          if ($('.other-views #' + stream.getId()).length === 0) {
-            $('.other-views').append('<div style="float:left; width:210px;height:147px;display:inline-block;" id="' + stream.getId() + '"></div>');
+          if ($('.other-views #videoStream' + stream.getId()).length === 0) {
+            $('.other-views').append('<div style="float:left; width:210px;height:147px;display:inline-block;" id="videoStream' + stream.getId() + '"></div>');
           }
-          stream.play('' + stream.getId());
+          stream.play('videoStream' + stream.getId());
         }
 
       });
@@ -91,7 +91,7 @@ function join() {
         var stream = evt.stream;
         stream.stop();
         if (stream.getId() != parseInt(getCookie("TutorId")) ) {
-            $('#' + stream.getId()).remove();
+            $('#videoStream' + stream.getId()).remove();
         }
       });
 
