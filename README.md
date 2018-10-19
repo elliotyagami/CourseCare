@@ -56,6 +56,17 @@ Chat -- user to user chat with a course room.
 
 Discussion -- basic template is ready only backend connection is left coming soon.
 
+## Instruction To Run
+
+- copy config.sample.json to config.json in src/config folder and provide the database credentails
+- copy .env.sample file in root folder to .env
+- provide facebook and google api keys, also generate the mitter and agora api keys
+- provide the website url
+- npm install
+- generate web compatible mitter-io package by using browserify
+- `browserify mitter-cdn.js -o bundle.js && mv bundle.js public/bower_components`
+- enjoy :) !!
+
 ## Todos:
 - [x] double course registration halts the server
 

@@ -5,11 +5,14 @@
         <i class="user icon"></i>
         Tutors
         <div class="menu">
-            {{#with tutor}}
-                 <a class="item" onclick="javascript:register_popup('{{id}}', '{{firstname}} {{lastname}}')">
-            <img class="ui avatar image" src="{{pic}}"> {{firstname}} {{lastname}}
-        </a>
-            {{/with}}
+            {{#ifeq userData.role "tutor"}}
+            <a class="item"> You </a>
+            {{else}} {{#with tutor}}
+            <a class="item" id="inituser-{{id}}" onclick="javascript:register_popup('{{id}}', '{{firstname}} {{lastname}}')">
+                <img class="ui avatar image" src="{{pic}}"> {{firstname}} {{lastname}}
+                <div class="ui label" style="display:none" id="labeluser-{{id}}"></div>
+            </a>
+            {{/with}} {{/ifeq}}
         </div>
     </a>
     <a class="item">
@@ -17,10 +20,11 @@
         Classmates
         <div class="menu">
             {{#each students}}
-        <a class="item" onclick="javascript:register_popup('{{id}}', '{{firstname}} {{lastname}}')">
-            <img class="ui avatar image" src="{{pic}}"> {{firstname}} {{lastname}}
-        </a>
-             {{/each}}
+            <a class="item" id="inituser-{{id}}" onclick="javascript:register_popup('{{id}}', '{{firstname}} {{lastname}}')">
+                <img class="ui avatar image" src="{{pic}}"> {{firstname}} {{lastname}}
+                <div class="ui label" style="display:none" id="labeluser-{{id}}"></div>
+            </a>
+            {{/each}}
 
         </div>
     </a>

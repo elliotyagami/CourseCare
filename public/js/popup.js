@@ -56,6 +56,10 @@ function display_popups()
 //creates markup for a new popup. Adds the id to popups array.
 function register_popup(id, name)
 {
+    let ele = document.querySelector("inituser-" + id +" > div.label")
+    if(ele){
+        element.parentNode.removeChild(element);
+    }
 
     for(var iii = 0; iii < popups.length; iii++)
     {
@@ -76,12 +80,14 @@ function register_popup(id, name)
     var element = '<div class="popup-head">';
     element = element + '<div class="popup-head-left">'+ name +'</div>';
     element = element + '<div class="popup-head-right"><a href="javascript:close_popup(\''+ id +'\');">&#10005;</a></div>';
-    element = element + '<div style="clear: both"></div></div><div class="popup-messages" id="user-' +id+'"></div><div class="chat-reply"><input type="text"><button style="right:float" onclick="broker('+id+')">send</button></div>';
+    element = element + '<div style="clear: both"></div></div><div class="popup-messages" id="user-' +id+'"></div><div class="chat-reply"><input type="text"><button style="right:float" onclick="msgHandler('+id+')">send</button></div>';
     let chatBox = document.createElement("div");
     chatBox.setAttribute('class', 'popup-box chat-popup');
     chatBox.setAttribute('id', id);
     chatBox.innerHTML = element;
     document.getElementsByTagName("body")[0].appendChild(chatBox);
+    let obj = getChannelId(id)
+    mitter.getChannelMessages(obj,id)
     connectChat({
         receiver:  parseInt(id)
     })
@@ -98,16 +104,6 @@ function broker(id){
    document.querySelector("#user-"+id+" + div>input").value = "";
    messenger("send",message,id)
 }
-{/* <ul class="chat">
- <li class="chat__bubble chat__bubble--rcvd chat__bubble--stop">What are you up to?</li>
- <li class="chat__bubble chat__bubble--sent">Not much.</li>
- <li class="chat__bubble chat__bubble--sent">Just writing some CSS.</li>
- <li class="chat__bubble chat__bubble--sent">I just LOVE writing CSS.</li>
- <li class="chat__bubble chat__bubble--sent chat__bubble--stop">Do you?</li>
- <li class="chat__bubble chat__bubble--rcvd">Yeah!</li>
- <li class="chat__bubble chat__bubble--rcvd">It's super fun.</li>
- <li class="chat__bubble chat__bubble--rcvd chat__bubble--stop">... SUPER fun.</li>
-</ul> */}
 function messenger(type,message,receiver){
     let ele = document.createElement('li');
     if (type == "received")
@@ -144,19 +140,58 @@ window.addEventListener("load", calculate_popups);
 
 //////////////////////////// for getting cookie value by name
 
-var getCookie = function(name) {
-	var getCookieValues = function(cookie) {
-		var cookieArray = cookie.split('=');
-		return cookieArray[1].trim();
-	};
+let getCookie = function (name) {
+    var getCookieValues = function (cookie) {
+        var cookieArray = cookie.split('=');
+        return cookieArray[1].trim();
+    };
 
-	var getCookieNames = function(cookie) {
-		var cookieArray = cookie.split('=');
-		return cookieArray[0].trim();
-	};
+    var getCookieNames = function (cookie) {
+        var cookieArray = cookie.split('=');
+        return cookieArray[0].trim();
+    };
 
-	var cookies = document.cookie.split(';');
-	var cookieValue = cookies.map(getCookieValues)[cookies.map(getCookieNames).indexOf(name)];
+    var cookies = document.cookie.split(';');
+    var cookieValue = cookies.map(getCookieValues)[cookies.map(getCookieNames).indexOf(name)];
 
-	return (cookieValue === undefined) ? null : cookieValue;
+    return (cookieValue === undefined) ? null : cookieValue;
 };
+
+function getChannelId(receiverId) {
+    let userId = parseInt(getCookie('UserId'))
+    let min = userId < receiverId ? userId : receiverId;
+    let max = userId > receiverId ? userId : receiverId;
+
+    min = 'user-' + min
+    max = 'user-' + max
+    userId = 'user-' + userId
+    channelId = min + '@-@' + max
+    return {
+        channelId: channelId,
+        userId: userId
+    }
+}
+
+function msgHandler(id) {
+    id = parseInt(id)
+    let obj = getChannelId(id)
+    console.log(id)
+    console.log('id')
+    console.log(obj)
+    let message =  document.querySelector("#user-"+id+" + div>input").value;
+    document.querySelector("#user-"+id+" + div>input").value = "";
+    console.log(message)
+    messenger("send",message,id)
+    mitter.sendMessage(obj, message)
+}
+
+function createAndAppend(parent, obj) {
+	let ele = document.createElement(obj.ele)
+	Object.keys(obj).forEach(function (key) {
+		if (key != "ele" && key != 'textContent') {
+			ele.setAttribute(key, obj[key])
+		}
+		ele.textContent = obj.textContent
+	})
+	parent.appendChild(ele)
+}

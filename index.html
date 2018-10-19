@@ -1,11 +1,75 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js"></script>
+<!-- https://stackoverflow.com/questions/45578844/how-to-set-header-and-options-in-axios -->
+
 <script>
-    const instance = axios.create({
-  baseURL: 'https://api.mitter.io/',
-  timeout: 1000,
-  headers: {'X-Issued-Mitter-User-Authorization': 'eyJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJtaXR0ZXItaW8iLCJ1c2VyVG9rZW5JZCI6InVwb0J6VkZwblpxdEhRTTgiLCJ1c2VydG9rZW4iOiJidTdiZm5iZ3VlcHM4cjNkZ2lxbml1YTEzOSIsImFwcGxpY2F0aW9uSWQiOiJPTms2aC15c3hpNi1mQWpWQy1BZ0FHZSIsInVzZXJJZCI6InVzZXItMSJ9.A_Zm5_7JjoFxyvjfqHGgTHPDBHCzxUkJjFA1_nTpwm6th2DbCdcGQf7LwAk5dnB8zYpoxIpRysAfrWhlFoOnrA'}
-});
-axios.post('https://api.mitter.io/v1/users/me',{}).then(function(data){
-    console.log(data)
-})
+    var getCookie = function (name) {
+        var getCookieValues = function (cookie) {
+            var cookieArray = cookie.split('=');
+            return cookieArray[1].trim();
+        };
+
+        var getCookieNames = function (cookie) {
+            var cookieArray = cookie.split('=');
+            return cookieArray[0].trim();
+        };
+
+        var cookies = document.cookie.split(';');
+        var cookieValue = cookies.map(getCookieValues)[cookies.map(getCookieNames).indexOf(name)];
+
+        return (cookieValue === undefined) ? null : cookieValue;
+    };
+
+    axios.defaults.baseURL = 'https://api.mitter.io/v1/'
+    axios.defaults.headers = {
+        'Content-Type': 'application/json',
+        'X-Issued-Mitter-User-Authorization': getCookie('recipient')
+    }
+    axios.get('/users/me').then(function (data) {
+        console.log(data)
+    })
+
+    function sendMessage(obj, msgText) {
+        let req = {
+            "messageType": "Standard",
+            "senderId": obj.userId,
+            "payloadType": "mitter.mt.Text",
+            "textPayload": msgText,
+            "timelineEvents": [
+                {
+                    "type": "mitter.mtet.SentTime",
+                    "eventTimeMs": new Date().getTime(),
+                    "subject": obj.userId
+                }
+            ]
+        }
+        console.log(req)
+        axios.post('/channels/' + obj.channelId + '/messages',
+            req).then(function (data) {
+                console.log(data)
+            })
+    }
+
+    function getChannelId(receiverId) {
+        let userId = parseInt(getCookie('UserId'))
+        let min = userId < receiverId ? userId : receiverId;
+        let max = userId > receiverId ? userId : receiverId;
+
+        min = 'user-' + min
+        max = 'user-' + max
+        userId = 'user-' + userId
+        channelId = min + '@-@' + max
+        return {
+            channelId: channelId,
+            userId: userId
+        }
+    }
+
+    function msgHandler(receiverId) {
+        let obj = getChannelId(receiverId)
+        sendMessage(obj, "Hello world")
+    }
+
+    msgHandler(1)
+
+
 </script>
