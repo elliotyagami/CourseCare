@@ -22,10 +22,26 @@
         .margin-top {
             margin-top: 2vh !important;
         }
+        .flash-message {
+            /* width: 40%; */
+            z-index: 10 ;
+            position: absolute !important;
+            top: 5vh;
+            left: 50%;
+transform: translateX(-50%);
+
+        }
     </style>
 </head>
 
 <body>
+        <!-- <div class="ui compact positive message flash-message">
+                <i class="close icon"></i>
+                <div class="header">
+                  You are eligible for a reward
+                </div>
+                <p>Go to your <b>special offers</b> page to see now.</p>
+              </div> -->
     <div class="ui basic segment register-form" style="margin: auto;">
         <div class="ui two column very relaxed stackable grid margin-top">
             <div class="center aligned middle aligned  column">
@@ -135,5 +151,13 @@
             })
         });
 
+$('.message .close')
+  .on('click', function() {
+    $(this)
+      .closest('.message')
+      .transition('fade')
+    ;
+  })
+;
     </script>
 </body>

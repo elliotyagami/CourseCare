@@ -1,0 +1,37 @@
+<div class="ui visible left thin vertical sidebar menu" id="course-side-bar">
+    <a class="item height-same">
+    </a>
+    <a class="active item" value="home">
+        <i class="home icon"></i>
+        Home
+    </a>
+    <a class="item" value="discussion">
+        <i class="columns icon"></i>
+        Discussion
+    </a>
+    <a class="item" value="qanda">
+        <i class="quote right icon"></i>
+        Q/A
+    </a>
+    <a class="item" value="whiteboard">
+        <i class="edit outline icon"></i>
+        WhiteBoard
+    </a>
+    <a class="item" value="chat">
+        <i class="newspaper icon"></i>
+        Chat
+    </a>
+</div>
+<script>
+    $('#course-side-bar > a').click(function(){
+        $(this).parent().children().removeClass('active');
+        $(this).addClass('active');
+        let url = $(this).attr('value');
+        $('#loader').removeClass('disabled').addClass('active')
+        $.get( "/" + url, function( data ) {
+            console.log(data)
+            $('#loader').addClass('disabled').removeClass('active')
+            $( ".main-screen" ).html(data);
+        });
+    })
+</script>
