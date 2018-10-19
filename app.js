@@ -117,6 +117,7 @@ function onConnection(socket){
 	let cookies = socket.handshake.headers.cookie
 	let room = "course#" + parseInt(getCookie("CourseId", cookies))
 	let userId = parseInt(getCookie("UserId", cookies))
+	socket.join(room);
 
 
 	socket.on('drawing', (data) => io.sockets.in(room).emit('drawing', data));
