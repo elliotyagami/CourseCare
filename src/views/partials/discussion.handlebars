@@ -1,5 +1,8 @@
 <div class="ui feed">
 
+{{> write-post}}
+<h3 class="ui dividing header"></h3>
+
 {{#each posts}}
 {{#with this}}
 {{> post authorpic=authorpic authorname=authorname title=title time=time description=description likecount=likecount }}

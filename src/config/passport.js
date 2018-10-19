@@ -4,7 +4,7 @@ import Sequelize from 'sequelize'
 let Op = Sequelize.Op
 import models from './../models'
 import { getPicture } from './../helpers'
-import Mitter from '@mitter-io/node'
+import { userClient, userAuthClient } from './../config/mitter'
 import passportGoogle from 'passport-google-oauth'
 
 
@@ -12,16 +12,6 @@ import dotenv from 'dotenv'
 dotenv.config()
 
 
-const mitter = Mitter.Mitter.forNode(
-    process.env.MITTER_APPLICATION_ID,
-    {
-        "accessKey": process.env.MITTER_ACCESS_KEY,
-        "accessSecret": process.env.MITTER_ACCESS_SECRET
-    }
-)
-
-const userAuthClient = mitter.clients().userAuth()
-const userClient = mitter.clients().users()
 
 module.exports = function (User, passport) {
     let LocalStrategy = passportLocal.Strategy;
@@ -83,18 +73,19 @@ module.exports = function (User, passport) {
         clientID: process.env.facebook_api_key,
         clientSecret: process.env.facebook_api_secret,
         passReqToCallback: true,
-        callbackURL: `${process.env.website}/auth/facebook/callback`
+        callbackURL: `${process.env.website}/auth/facebook/callback`,
+        profileFields: ['id', 'email', 'gender', 'link', 'locale', 'name']
     },
         function (req, accessToken, refreshToken, profile, done) {
             console.log(profile)
             let role = req.cookies.role
             let gender = profile.gender
-            let email = profile.id + '@facebook.com'
-            // let email = profile.emails[0].value
+            gender = gender ?gender : "male"
+            let email = profile.emails[0].value
             let obj = {
                 firstname: profile.name.givenName,
                 lastname: profile.name.familyName,
-                username: profile.username,
+                username: profile.id,
                 email: email,
                 role: role ? role : "student",
                 password: profile.provider,
@@ -108,6 +99,8 @@ module.exports = function (User, passport) {
                 },
                 defaults: obj
             }).spread(function (userResult, created) {
+                console.log(userResult, created)
+                console.log("userResult, created")
                 if (!userResult) { return done(null); }
                 done(null, userResult);
             })
@@ -123,7 +116,6 @@ module.exports = function (User, passport) {
         function (req, accessToken, refreshToken, profile, done) {
             console.log(profile)
             let role = req.cookies.role
-            console.log(req.cookies)
             let gender = profile.gender
             let email = profile.emails[0].value
             email ? email : profile.id + '@gmail.com'
@@ -132,7 +124,7 @@ module.exports = function (User, passport) {
                 lastname: profile.name.familyName,
                 username: profile.id.toString(),
                 email: email,
-                role: 'student',
+                role: role,
                 password: profile.provider,
                 gender: gender ? gender : "male",
                 pic: profile.photos[0].value

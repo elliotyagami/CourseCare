@@ -50,16 +50,16 @@
     overflow-y: scroll;
 }
 
-.reply {
+.chat-reply {
     width: 280px;
     height: 10%;
 }
-.reply>input{
+.chat-reply>input{
     border: 0;
     height: 100%;
     width: 80%;
 }
-.reply>button{
+.chat-reply>button{
     border: 0;
     height: 100%;
 }

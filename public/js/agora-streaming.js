@@ -12,7 +12,7 @@ function join() {
 
             localStream = AgoraRTC.createStream({
                 streamID: uid,
-                audio: true,
+                audio: false,
                 video: true,
                 screen: false
             }

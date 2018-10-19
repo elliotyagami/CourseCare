@@ -6,19 +6,20 @@
 import bcrypt from 'bcryptjs'
 // import tutor from './tutor'
 // import student from './student'
-import { index, registerUser, register, dashboard, profile, addCourse, registerCourse, courseList, searchCourseTemplate } from './../controllers'
-import { whiteboard, discussion, addCourseTemplate, registerCourseTemplate } from './../controllers/ajax'
+import { index, registerUser, register, dashboard, profile } from './../controllers'
+import { whiteboardTemplate, discussion, comingSoon } from './../controllers/ajax'
+import { addCourseTemplate, registerCourseTemplate, searchCourseTemplate, courseListTemplate, addCourse, registerCourse } from '../controllers/course'
+import { postAdd } from './../controllers/post'
 
 module.exports = function (app, passport) {
 
     app.get('/', index)
 
 
-    // facebook oauth
-
-    app.get('/auth/facebook', passport.authenticate('facebook', {scope: ['public_profile', 'email']}))
-
+    // oauth
+    app.get('/auth/facebook', passport.authenticate('facebook'))
     app.get('/auth/google', passport.authenticate('google', { scope: ['https://www.googleapis.com/auth/plus.login', 'email'] }))
+
 
     app.get('/auth/google/callback', function (req, res, next) {
         passport.authenticate('google', function (err, user, info) {
@@ -27,14 +28,12 @@ module.exports = function (app, passport) {
             if (user)
                 // req.logIn(user, function (err) {
                 req.logIn([user, res], function (err) {
-                    console.log(req.user)
                     res.cookie('UserId', user.id)
                     res.cookie('recipient', user.token)
                     res.redirect(`/${user.role}/profile`);
                 })
         })(req, res, next)
     })
-
     app.get('/auth/facebook/callback', function (req, res, next) {
         passport.authenticate('facebook', function (err, user, info) {
             console.log("callack facebook")
@@ -42,7 +41,6 @@ module.exports = function (app, passport) {
             if (user)
                 // req.logIn(user, function (err) {
                 req.logIn([user, res], function (err) {
-                    console.log(req.user)
                     res.cookie('UserId', user.id)
                     res.cookie('recipient', user.token)
                     res.redirect(`/${user.role}/profile`);
@@ -50,21 +48,26 @@ module.exports = function (app, passport) {
         })(req, res, next)
     })
 
-    app.get('/whiteboard', whiteboard)
+    app.get('/whiteboard', whiteboardTemplate)
+    app.get('/qanda', comingSoon)
     app.get('/discussion', discussion)
+
+    // courses
     app.get('/course/add', addCourseTemplate)
     app.get('/course/search', searchCourseTemplate)
     app.get('/course/register', registerCourseTemplate)
     app.get('/course/register/:id', registerCourseTemplate)
+    app.get('/course/list', courseListTemplate)
 
     app.post('/course/register', registerCourse)
     app.post('/course/add', addCourse)
-    app.get('/course/list', courseList)
+
+    app.get('/post/add', postAdd)
 
     app.get('/:role/register', register)
     app.post('/:role/register', registerUser)
-    app.get('/:role/dashboard', dashboard)
     app.get('/:role/profile', profile)
+    app.get('/:role/dashboard', dashboard)
     app.get('/:role/dashboard/:id', dashboard)
 
     app.post('/:role/login', function (req, res, next) {
@@ -75,15 +78,12 @@ module.exports = function (app, passport) {
                 req.logIn([user, res], function (err) {
                     // req.logIn(user, function (err) {
                     res.cookie('UserId', user.id)
-                    console.log(user.password)
                     res.redirect(`/${user.role}/profile`);
                 })
         })(req, res, next)
     })
 
 
-    // app.use('/tutor', tutor)
-    // app.use('/student', student)
 
     app.get('/logout', function (req, res) {
         let role = req.user.role;

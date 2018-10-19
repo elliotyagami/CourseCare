@@ -25,7 +25,6 @@ export default function(sequelize, Sequelize) {
     });
 
     Course.associate = function (models) {
-        console.log(models)
         Course.belongsTo(models.User, {
           as: 'creator'
         });

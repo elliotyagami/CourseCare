@@ -1,4 +1,4 @@
-export const whiteboard = (req, res) => {
+export const whiteboardTemplate = (req, res) => {
     if (req.isAuthenticated()) {
         // res.redirect(`/${req.user.type}/whiteboard`)
         res.render("xhr",{userData: req.user, type: 'whiteboard',layout: 'empty.handlebars'})
@@ -7,23 +7,12 @@ export const whiteboard = (req, res) => {
     }
 }
 
-export const addCourseTemplate = (req, res) => {
-    if (req.isAuthenticated() && req.user.role ==  "tutor") {
-        // res.redirect(`/${req.user.type}/whiteboard`)
-        res.render("xhr",{userData: req.user, type: 'add-course', layout: 'empty.handlebars'})
-    } else {
-        res.render("")
-    }
+
+export const comingSoon = (req, res) => {
+        res.render("xhr",{type: 'coming-soon', layout: 'empty.handlebars'})
 }
 
-export const registerCourseTemplate = (req, res) => {
-    if (req.isAuthenticated() && req.user.role ==  "student") {
-        // res.redirect(`/${req.user.type}/whiteboard`)
-        res.render("xhr",{userData: req.user, type: 'register-course', layout: 'empty.handlebars', courseId: req.params.id})
-    } else {
-        res.render("")
-    }
-}
+
 
 
 export const discussion = (req, res) => {

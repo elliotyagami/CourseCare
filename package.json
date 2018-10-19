@@ -1,7 +1,7 @@
 {
-  "name": "coursecare",
+  "name": "Coursecare",
   "version": "1.0.0",
-  "description": "a site for collaborative learning",
+  "description": "A site for collaborative learning",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -13,8 +13,8 @@
   "license": "MIT",
   "dependencies": {
     "@mitter-io/models": "^0.5.8",
-    "@mitter-io/node": "^0.5.8-1",
-    "@mitter-io/web": "^0.5.8-1",
+    "@mitter-io/node": "^0.5.11-1",
+    "@mitter-io/web": "^0.5.10",
     "bcryptjs": "^2.4.3",
     "connect-session-sequelize": "^5.2.2",
     "cookie-parser": "^1.4.3",
